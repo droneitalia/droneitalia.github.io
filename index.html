@@ -1382,4 +1382,62 @@ body:has(#comments-page:not([hidden])) #comments-page #cm-items{
  .di-modal-head h2{font-size:20px!important}
 }
 
+</style><style id="di-mobile-visual-polish">
+/* Solo smartphone e tablet: sfondo continuo e allineamento dei contenitori. */
+@media(max-width:1100px){
+ body{
+  --di-mobile-gutter:clamp(12px,3.6vw,24px);
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  background-image:none!important;background-color:transparent!important;
+  isolation:isolate;
+ }
+ body::before{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(rgba(3,15,31,.66),rgba(3,15,31,.66)),url('assets/mobile-background-clean-v2.webp');
+  background-position:center,76% center;background-repeat:no-repeat;background-size:cover;
+ }
+ body>header{width:calc(100% - var(--di-mobile-gutter) - var(--di-mobile-gutter))!important;max-width:none!important;margin-inline:auto!important;padding:12px 0!important;background:transparent!important;text-align:center}
+ main.wrap{
+  width:100%!important;max-width:none!important;min-width:0!important;
+  padding-inline:var(--di-mobile-gutter)!important;margin-inline:auto!important;
+  background:transparent!important;transform:none!important;
+ }
+ .hero,#menu.menu,#app-dropdown-panel,.section{
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  margin-left:auto!important;margin-right:auto!important;box-sizing:border-box!important;
+ }
+ .hero{margin-top:4px!important;margin-bottom:14px!important}
+ #menu.menu{background:transparent!important;margin-bottom:20px!important;row-gap:8px!important}
+ .section,.section>.copy{background:transparent!important;box-shadow:none!important}
+ .section .copy p#description{color:#e2ecf6!important;text-shadow:0 1px 4px #0008}
+ .copy h1{color:#fff;text-shadow:0 2px 8px #0008}
+ .below#caption{max-width:100%;overflow-wrap:anywhere;text-shadow:0 1px 4px #000}
+ #download-page,
+ body:has(#comments-page:not([hidden])) #comments-page.comments-page:not([hidden]){
+  width:calc(100% - var(--di-mobile-gutter) - var(--di-mobile-gutter))!important;
+  max-width:calc(100% - var(--di-mobile-gutter) - var(--di-mobile-gutter))!important;
+  min-width:0!important;margin-left:auto!important;margin-right:auto!important;
+  left:auto!important;right:auto!important;transform:none!important;
+  background:rgba(5,25,46,.8)!important;border-color:rgba(117,181,219,.48)!important;
+  backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+ }
+ #app-dropdown-panel{background:rgba(5,25,46,.8)!important;border-color:rgba(117,181,219,.48)!important}
+ #app-dropdown-panel button{background:rgba(20,62,95,.72)!important}
+ #app-dropdown-panel button.active{background:#225b83!important}
+ #comments-page #cm-items article,#download-page .latest,#download-page .release{background:rgba(12,44,70,.8)!important}
+ #comments-page>p,#download-page p{color:#dce9f4!important}
+ body .footer{width:100%!important;max-width:100%!important;background:rgba(3,18,34,.8)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+}
+@media(max-width:900px){
+ .section>.copy{max-width:620px!important;margin-inline:auto!important}
+ .section .copy p#description{max-width:52ch!important}
+ .section .device{width:min(82vw,330px)!important}
+}
+@media(max-width:700px){
+ .section{gap:24px!important}
+ .copy h1{margin:0 0 12px!important}
+ .section .copy p#description{font-size:16px!important;line-height:1.6!important}
+ .section .device{width:min(82vw,310px)!important}
+}
+
 </style></body></html>
