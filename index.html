@@ -1317,8 +1317,8 @@ body:has(#comments-page:not([hidden])) #comments-page #cm-items{
   grid-column:1/-1;order:2;width:100%!important;max-width:100%!important;min-width:0!important;justify-content:center!important;
  }
  #menu.menu #di-compose-outside #di-compose-toggle{min-height:44px!important;white-space:normal!important;padding:8px 12px!important;font-size:14px!important}
- #app-dropdown-panel{max-width:100%!important;margin:0 auto 18px!important;scroll-padding-inline:8px}
- #app-dropdown-panel button{min-height:44px!important}
+ #app-dropdown-panel{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px!important;max-width:100%!important;margin:0 auto 18px!important;overflow:visible!important}
+ #app-dropdown-panel button{width:100%!important;min-width:0!important;min-height:44px!important;white-space:normal!important;padding:9px 6px!important}
  .section{width:100%!important;max-width:100%!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(240px,34%)!important;gap:24px!important}
  .section>.copy{padding-top:0!important;min-width:0!important}
  .copy h1{font-size:clamp(28px,4vw,38px)!important}
@@ -1362,6 +1362,7 @@ body:has(#comments-page:not([hidden])) #comments-page #cm-items{
 @media(max-width:700px){
  .wrap{padding-inline:14px!important}
  #menu.menu>button,#menu.menu .app-dropdown .app-dropdown-toggle{font-size:13px!important}
+ #app-dropdown-panel{grid-template-columns:repeat(2,minmax(0,1fr))}
  .copy h1{font-size:clamp(26px,7vw,34px)!important}
  .section .copy p#description{font-size:16px!important;line-height:1.55!important}
  body:has(#comments-page:not([hidden])) #comments-page.comments-page:not([hidden]){padding:14px!important}
