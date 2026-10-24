@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src https://drone-italia-commenti.turni-vigilanza-pdura.workers.dev; base-uri 'none'; form-action 'none'; object-src 'none'">
+<title>Amministrazione commenti — Drone Italia</title>
+<style>
+:root{color-scheme:dark;font:15px system-ui,-apple-system,"Segoe UI",sans-serif;color:#e8f5ff;background:#06162a}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#164269,#06162a 75%);line-height:1.55}header,main{max-width:1040px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #315f80}header strong{letter-spacing:.1em;font-size:13px}a{color:#9bdbff}h1{font-size:clamp(25px,4vw,34px);line-height:1.2;margin:8px 0 12px}h2{font-size:20px;margin:0 0 12px}p{color:#bcd7e9}.panel{background:#092743;border:1px solid #39759e;border-radius:16px;padding:24px;margin:20px 0}#login-panel{max-width:620px;margin:30px auto}label{display:block;font-weight:700;font-size:13px;margin:12px 0 5px}input,select,button{font:inherit}input,select{width:100%;padding:11px;border-radius:8px;border:1px solid #73a6c6;background:#fff;color:#102a3e}button{border:1px solid #65b8ed;border-radius:9px;padding:10px 15px;background:#1976bd;color:#fff;cursor:pointer;font-weight:700}button:hover{filter:brightness(1.12)}button:disabled{opacity:.55;cursor:wait}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #80d4ff;outline-offset:3px}.secondary{background:#173e5e;border-color:#4c7f9f}.danger{background:#763242;border-color:#cf8190}.toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}.toolbar p{margin:0;font-size:13px}.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 15px}.tabs button[aria-pressed="true"]{background:#4daedc;color:#06253c;border-color:#a4e7ff}.filters{display:flex;gap:15px;align-items:end;flex-wrap:wrap}.filters>div{flex:1;min-width:180px}.hint{font-size:13px;color:#9ebfd5}.status{min-height:24px;overflow-wrap:anywhere}#login-status{color:#ffbbc1}.item{background:#103652;border:1px solid #39759e;border-radius:12px;padding:18px;margin:14px 0;overflow-wrap:anywhere}.item-head{display:flex;justify-content:space-between;align-items:start;gap:12px;flex-wrap:wrap}.item strong{color:#fff}.meta{font-size:12px;color:#a5c5d9;margin:5px 0}.body{white-space:pre-wrap;color:#e8f5ff}.badge{font-size:12px;font-weight:750;border-radius:999px;border:1px solid #648daa;padding:3px 10px;background:#183e5b}.badge.pending{color:#ffe5a0;border-color:#b29656}.badge.deleted{color:#ffbac5;border-color:#9c5f70}.badge.published{color:#b6f2d6;border-color:#509879}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.actions button{font-size:13px;padding:8px 12px}.hash{font:12px ui-monospace,monospace;word-break:break-all;color:#a8c9df}dialog{background:#0d2c47;color:#e8f5ff;border:1px solid #5794b8;border-radius:16px;width:min(520px,calc(100vw - 28px));padding:24px}dialog::backdrop{background:#000b}dialog p{white-space:pre-wrap;overflow-wrap:anywhere}dialog .actions{justify-content:flex-end}[hidden]{display:none!important}@media(max-width:600px){header,main{padding:16px}.panel{padding:18px}.toolbar{align-items:flex-start}button{min-height:42px}}
+.site-footer{position:fixed;bottom:0;left:0;right:0;padding:8px 12px;text-align:center;font-size:12px;color:#b2d0e5;background:rgba(4,23,42,.94)}main{padding-bottom:55px}.access-banner{border:1px solid #b6914a;background:#483b20;color:#ffe6ae;padding:12px 14px;border-radius:9px;font-size:14px;margin:0 0 20px}</style>
+</head>
+<body>
+<header><strong>DRONE ITALIA · AMMINISTRAZIONE</strong><a href="./#commenti">Torna alla community</a></header>
+<main>
+<section class="panel" id="login-panel" aria-labelledby="login-title">
+<p class="access-banner" role="note">Area riservata. Non sei autorizzato ad accedere ai comandi senza la chiave amministrativa.</p><h1 id="login-title">Gestisci i commenti</h1><p>Accedi con la chiave amministrativa <strong>ADMIN_TOKEN</strong> già configurata nel Worker Cloudflare. Non è la password Google e non è il link ricevuto via email.</p>
+<form id="login-form"><label for="admin-key">Chiave amministrativa</label><input id="admin-key" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" required><p class="hint">La chiave viene inviata soltanto al Worker di Drone Italia e resta in memoria fino alla chiusura del pannello. Non viene salvata nel browser. Dopo un accesso riuscito viene ricordato solo che questo browser può mostrare il collegamento “Area amministratore”.</p><button id="login-submit" type="submit">Apri pannello</button><p id="login-status" class="status" role="status" aria-live="polite"></p></form>
+</section>
+<section id="workspace" hidden aria-labelledby="workspace-title">
+<div class="toolbar"><div><h1 id="workspace-title">Moderazione community</h1><p>Commenti, risposte e blocchi IP.</p></div><button id="signout" class="secondary" type="button">Chiudi pannello</button></div>
+<div class="tabs" aria-label="Contenuti da gestire"><button type="button" data-tab="comments" aria-pressed="true">Commenti</button><button type="button" data-tab="replies" aria-pressed="false">Risposte</button><button type="button" data-tab="bans" aria-pressed="false">Blocchi IP</button></div>
+<div class="filters"><div id="filter-wrap"><label for="status-filter">Mostra</label><select id="status-filter"><option value="all">Tutti gli stati</option><option value="published">Pubblicati</option><option value="pending">In attesa</option><option value="deleted">Eliminati dalla pagina</option></select></div><div><label for="search">Cerca nei risultati caricati</label><input id="search" type="search" placeholder="Nickname, testo o ID"></div><button id="refresh" class="secondary" type="button">Aggiorna elenco</button></div>
+<p class="hint" id="scope">Vengono caricati i 100 commenti più recenti. “Elimina” nasconde il messaggio dalla pagina; puoi ripristinarlo da questo pannello.</p>
+<p id="workspace-status" class="status" role="status" aria-live="polite"></p><div id="items" aria-live="polite"></div>
+</section>
+</main><footer class="site-footer" aria-label="Informazioni sul sito">Drone Italia · Community</footer>
+<dialog id="confirm-dialog" aria-labelledby="confirm-title"><h2 id="confirm-title"></h2><p id="confirm-text"></p><div id="duration-wrap" hidden><label for="ban-days">Durata del blocco</label><select id="ban-days"><option value="1">1 giorno</option><option value="7" selected>7 giorni</option><option value="30">30 giorni</option><option value="0">Senza scadenza</option></select></div><div class="actions"><button id="confirm-cancel" class="secondary" type="button">Annulla</button><button id="confirm-submit" type="button">Conferma</button></div></dialog>
+<script>
+(()=>{
+ 'use strict';
+ const API='https://drone-italia-commenti.turni-vigilanza-pdura.workers.dev';
+ const $=id=>document.getElementById(id);
+ const labels={published:'Pubblicato',pending:'In attesa',deleted:'Eliminato dalla pagina'};
+ let key='',tab='comments',rows=[],busy=false,requestId=0,confirmAction=null;
+ const stamp=new Intl.DateTimeFormat('it-IT',{dateStyle:'short',timeStyle:'short',timeZone:'Europe/Rome'});
+ function date(value){const d=new Date(value);return Number.isNaN(d.getTime())?'Data non disponibile':stamp.format(d);}
+ function element(tag,text,cls){const e=document.createElement(tag);if(text!==undefined)e.textContent=String(text);if(cls)e.className=cls;return e;}
+ function setBusy(value){busy=value;document.querySelectorAll('#workspace button,#workspace select,#login-submit').forEach(e=>e.disabled=value);}
+ function lock(message=''){
+  ++requestId;key='';rows=[];busy=false;confirmAction=null;
+  $('admin-key').value='';$('items').replaceChildren();$('workspace-status').textContent='';
+  $('workspace').hidden=true;$('login-panel').hidden=false;$('login-status').textContent=message;
+  if($('confirm-dialog').open)$('confirm-dialog').close();setBusy(false);
+ }
+ async function api(path,body){
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);
+  try{
+   const response=await fetch(API+path,{method:body===undefined?'GET':'POST',headers:{Authorization:'Bearer '+key,...(body===undefined?{}:{'Content-Type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)}),signal:controller.signal,cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer'});
+   let data;try{data=await response.json();}catch(_){throw Error('Risposta del servizio non valida.');}
+   if(response.status===401){lock('Chiave non valida o non più autorizzata.');throw Error('Accesso non autorizzato.');}
+   if(!response.ok)throw Error(data.error||'Operazione non riuscita.');return data;
+  }finally{clearTimeout(timer);}
+ }
+ function failure(e){return e.name==='AbortError'?'Il servizio non ha risposto in tempo. Aggiorna l’elenco per controllare l’esito.':e.message||'Impossibile raggiungere il servizio.';}
+ function button(text,cls,onClick){const b=element('button',text,cls);b.type='button';b.disabled=busy;b.addEventListener('click',onClick);return b;}
+ function ask(action,item){
+  if(busy)return;confirmAction={action,item,tab};
+  const isBan=action==='ban';$('duration-wrap').hidden=!isBan;
+  if(isBan){$('confirm-title').textContent='Bloccare questo IP?';$('confirm-text').textContent='Il blocco riguarda l’indirizzo IP usato per questo messaggio, non il singolo account. Verranno nascosti tutti i commenti e le risposte provenienti dallo stesso IP. Altri utenti sulla stessa rete possono essere coinvolti.';}
+  else if(action==='delete'){$('confirm-title').textContent='Eliminare il messaggio dalla pagina?';$('confirm-text').textContent='Messaggio #'+item.id+' di '+item.nickname+'\n\n'+item.body+'\n\nIl messaggio verrà nascosto. Potrai ripristinarlo dal filtro “Eliminati dalla pagina”.';}
+  else if(action==='approve'){$('confirm-title').textContent=item.status==='deleted'?'Ripristinare il messaggio?':'Approvare il messaggio?';$('confirm-text').textContent='Il messaggio #'+item.id+' di '+item.nickname+' sarà visibile pubblicamente.';}
+  else{$('confirm-title').textContent='Revocare il blocco IP?';$('confirm-text').textContent='L’IP potrà tornare a inviare messaggi, se supera gli altri controlli. I messaggi nascosti non verranno ripristinati automaticamente.';}
+  $('confirm-submit').textContent=isBan?'Blocca IP':action==='delete'?'Elimina dalla pagina':action==='revoke'?'Revoca blocco':'Pubblica';
+  $('confirm-submit').className=isBan||action==='delete'?'danger':'';
+  $('confirm-dialog').showModal();$('confirm-cancel').focus();
+ }
+ function render(){
+  const q=$('search').value.trim().toLocaleLowerCase('it-IT'),status=$('status-filter').value;
+  const filtered=rows.filter(r=>(tab==='bans'||status==='all'||r.status===status)&&[r.id,r.nickname,r.body,r.comment_id,r.ip_hash].some(v=>String(v??'').toLocaleLowerCase('it-IT').includes(q)));
+  $('items').replaceChildren();
+  if(!filtered.length){$('items').append(element('p',rows.length?'Nessun risultato per i filtri selezionati.':'Nessun elemento disponibile.','hint'));return;}
+  for(const item of filtered){
+   const card=element('article',undefined,'item'),head=element('div',undefined,'item-head');
+   if(tab==='bans'){
+    const expired=item.expires_at&&Date.parse(item.expires_at)<=Date.now();
+    head.append(element('strong','Blocco #'+item.id),element('span',expired?'Scaduto':'Attivo','badge'));
+    card.append(head,element('p','IP anonimizzato: '+item.ip_hash,'hash'),element('p','Creato: '+date(item.created_at)+' · Scadenza: '+(item.expires_at?date(item.expires_at):'senza scadenza'),'meta'));
+    const actions=element('div',undefined,'actions');actions.append(button('Revoca blocco','secondary',()=>ask('revoke',item)));card.append(actions);
+   }else{
+    head.append(element('strong',item.nickname||'Utente'),element('span',labels[item.status]||item.status,'badge '+(['published','pending','deleted'].includes(item.status)?item.status:'')));
+    card.append(head,element('p','#'+item.id+(tab==='replies'?' · Risposta al commento #'+item.comment_id:'')+' · '+date(item.created_at),'meta'),element('p',item.body||'','body'));
+    const actions=element('div',undefined,'actions');
+    if(item.status!=='published')actions.append(button(item.status==='deleted'?'Ripristina':'Approva','',()=>ask('approve',item)));
+    if(item.status!=='deleted')actions.append(button('Elimina dalla pagina','danger',()=>ask('delete',item)));
+    actions.append(button('Blocca IP','secondary',()=>ask('ban',item)));card.append(actions);
+   }
+   $('items').append(card);
+  }
+ }
+ async function load(){
+  if(busy||!key)return false;const id=++requestId,resource=tab;
+  setBusy(true);$('workspace-status').textContent='Caricamento…';
+  try{const data=await api('/admin/'+resource);if(id!==requestId)return;
+   if(!Array.isArray(data[resource]))throw Error('Elenco non valido.');rows=data[resource];render();
+   $('workspace-status').textContent=rows.length+' elementi caricati.';return true;
+  }catch(e){if(id===requestId)$('workspace-status').textContent=failure(e);return false;}finally{if(id===requestId)setBusy(false);}
+ }
+ $('login-form').addEventListener('submit',async event=>{
+  event.preventDefault();if(busy||!$('login-form').reportValidity())return;
+  key=$('admin-key').value.trim();if(!key)return;$('admin-key').value='';
+  const id=++requestId;setBusy(true);$('login-status').textContent='Verifica accesso…';
+  try{const data=await api('/admin/comments');if(id!==requestId)return;if(!Array.isArray(data.comments))throw Error('Elenco non valido.');
+   try{localStorage.setItem('drone_italia_admin_browser_v1','recognized');}catch(_){}
+   tab='comments';rows=data.comments;$('status-filter').value='all';$('search').value='';$('filter-wrap').hidden=false;
+   document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));
+   $('scope').textContent='Vengono caricati i 100 commenti più recenti. “Elimina” nasconde il messaggio dalla pagina; puoi ripristinarlo da questo pannello.';
+   $('login-panel').hidden=true;$('workspace').hidden=false;$('login-status').textContent='';render();$('workspace-status').textContent=rows.length+' commenti caricati.';
+  }catch(e){if(id===requestId){key='';$('login-status').textContent=failure(e);}}finally{if(id===requestId)setBusy(false);}
+ });
+ document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{
+  if(busy)return;tab=b.dataset.tab;rows=[];$('search').value='';$('status-filter').value='all';$('items').replaceChildren();
+  document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  $('filter-wrap').hidden=tab==='bans';$('scope').textContent=tab==='bans'?'I 100 blocchi IP più recenti. Un blocco può interessare più persone che condividono la stessa rete.':'Vengono caricati i 100 '+(tab==='comments'?'commenti':'messaggi di risposta')+' più recenti. Gli elementi eliminati dalla pagina possono essere ripristinati.';load();
+ }));
+ $('refresh').addEventListener('click',load);$('status-filter').addEventListener('change',render);$('search').addEventListener('input',render);
+ $('signout').addEventListener('click',()=>{lock('Pannello chiuso.');$('admin-key').focus();});
+ $('confirm-cancel').addEventListener('click',()=>{confirmAction=null;$('confirm-dialog').close();});
+ $('confirm-dialog').addEventListener('cancel',()=>{confirmAction=null;});
+ $('confirm-submit').addEventListener('click',async()=>{
+  if(busy||!confirmAction||!key)return;
+  const {action,item,tab:resource}=confirmAction;confirmAction=null;
+  const body=action==='ban'?{days:Number($('ban-days').value)}:{};
+  $('confirm-dialog').close();setBusy(true);$('workspace-status').textContent='Operazione in corso…';
+  try{const path=action==='revoke'?'/admin/bans/'+item.id+'/revoke':'/admin/'+resource+'/'+item.id+'/'+action;
+   const result=await api(path,body);if(result.ok!==true)throw Error('Operazione non confermata.');
+   setBusy(false);const refreshed=await load();if(key&&refreshed)$('workspace-status').textContent='Operazione completata. Elenco aggiornato.';
+  }catch(e){if(key)$('workspace-status').textContent=failure(e);}finally{setBusy(false);}
+ });
+ // Una pagina ripristinata dalla cache deve richiedere di nuovo la chiave.
+ window.addEventListener('pageshow',event=>{if(event.persisted)lock();});
+ window.addEventListener('pagehide',()=>{lock();});
+})();
+</script>
+</body></html>
