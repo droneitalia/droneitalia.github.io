@@ -1145,39 +1145,7 @@ body:has(#comments-page:not([hidden])) #comments-page #cm-items{
  body:has(#comments-page:not([hidden])) #comments-page>p{margin-bottom:7px!important}
 }
 </style>
-<script id="di-scroll-isolato-script-v57">
-(()=>{
- const panel=document.getElementById('comments-page');
- const list=document.getElementById('cm-items');
- if(!panel||!list)return;
- let active=false;
- function adjust(){
-  if(window.matchMedia('(max-width:1100px)').matches){list.style.removeProperty('--di-comments-list-height');return;}
-  if(panel.hidden)return;
-  // Misura lo spazio effettivo sotto la lista, senza cambiare la grafica.
-  // Lascia visibili il bordo inferiore del riquadro e uno spazio dal fondo finestra.
-  const panelStyle=getComputedStyle(panel);
-  const innerBottom=parseFloat(panelStyle.paddingBottom)||0;
-  const borderBottom=parseFloat(panelStyle.borderBottomWidth)||0;
-  const viewportGap=20;
-  const available=Math.max(40,Math.floor(window.innerHeight-list.getBoundingClientRect().top-innerBottom-borderBottom-viewportGap));
-  list.style.setProperty('--di-comments-list-height',available+'px');
- }
- function sync(){
-  const visible=!panel.hidden;
-  if(visible&&!active){
-   window.scrollTo(0,0);
-   active=true;
-   requestAnimationFrame(adjust);
-  }else if(!visible){active=false;}
-  if(visible)requestAnimationFrame(adjust);
- }
- new MutationObserver(sync).observe(panel,{attributes:true,attributeFilter:['hidden']});
- window.addEventListener('resize',adjust,{passive:true});
- window.addEventListener('orientationchange',()=>requestAnimationFrame(adjust),{passive:true});
- sync();
-})();
-</script>
+
 
 
 
@@ -1474,4 +1442,22 @@ body>header{padding-top:10px!important;padding-bottom:8px!important}
  body>header{padding-top:8px!important;padding-bottom:6px!important}
  .hero,body.di-menu-expanded .hero{aspect-ratio:3.8 / 1!important;margin:0 auto 6px!important}
 }
-</style><style id="di-hero-opaque-drone">.hero .di-hero-drone{clip-path:inset(0 44% 0 0)}.hero .di-hero-wordmark{clip-path:inset(0 0 0 56%);mix-blend-mode:screen}</style></body></html>
+</style><style id="di-hero-opaque-drone">.hero .di-hero-drone{clip-path:inset(0 44% 0 0)}.hero .di-hero-wordmark{clip-path:inset(0 0 0 56%);mix-blend-mode:screen}</style><style id="di-comments-natural-height">
+/* I messaggi determinano l'altezza del riquadro, anche dopo il caricamento asincrono. */
+html:has(#comments-page:not([hidden])),body:has(#comments-page:not([hidden])){
+ height:auto!important;min-height:100%!important;overflow-y:auto!important;overscroll-behavior-y:auto!important;
+}
+body:has(#comments-page:not([hidden])) #comments-page.comments-page:not([hidden]){
+ display:block!important;height:auto!important;min-height:0!important;max-height:none!important;
+ overflow:visible!important;margin-bottom:calc(70px + env(safe-area-inset-bottom,0px))!important;
+}
+body:has(#comments-page:not([hidden])) #comments-page .cm-list{
+ display:block!important;flex:none!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;
+}
+body:has(#comments-page:not([hidden])) #comments-page #cm-items{
+ display:block!important;flex:none!important;height:auto!important;min-height:0!important;max-height:none!important;
+ overflow:visible!important;overscroll-behavior:auto!important;touch-action:auto!important;
+}
+html:has(#di-comment-modal:not([hidden])),body:has(#di-comment-modal:not([hidden])),
+html:has(#zoom.open),body:has(#zoom.open){overflow:hidden!important}
+</style></body></html>
