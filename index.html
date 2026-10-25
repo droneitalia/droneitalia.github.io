@@ -1440,4 +1440,17 @@ body:has(#comments-page:not([hidden])) #comments-page #cm-items{
  .section .device{width:min(82vw,310px)!important}
 }
 
+</style><style id="di-desktop-continuous-background">
+@media(min-width:1101px){
+ body{background-image:none!important;background-color:transparent!important;isolation:isolate}
+ body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(3,15,31,.66),rgba(3,15,31,.66)),url('assets/mobile-background-clean-v2.webp');background-position:center;background-repeat:no-repeat;background-size:cover}
+ body>header,main.wrap,.hero,#menu.menu,.section,.section>.copy{background:transparent!important}
+ .section,.section>.copy{box-shadow:none!important}
+ .section .copy p#description{color:#e2ecf6!important;text-shadow:0 1px 4px #0008}
+ .copy h1{color:#fff;text-shadow:0 2px 8px #0008}
+ .below#caption{text-shadow:0 1px 4px #000}
+ #app-dropdown-panel,#download-page,#comments-page.comments-page{background:rgba(5,25,46,.8)!important;border-color:rgba(117,181,219,.48)!important;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+ #comments-page #cm-items article,#download-page .latest,#download-page .release{background:rgba(12,44,70,.8)!important}
+ body .footer{background:rgba(3,18,34,.8)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+}
 </style></body></html>
