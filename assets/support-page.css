@@ -1,0 +1,10 @@
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#e8f5ff;background:#06162a;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;line-height:1.6;background:radial-gradient(ellipse at 50% 0,#164269 0,#06162a 75%)}
+a{color:#9bdbff}.di-support-header{max-width:1040px;margin:auto;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #3f739944}
+.di-support-brand{font-size:14px;font-weight:850;letter-spacing:.16em;text-decoration:none;color:#dff4ff}.di-support-header nav{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;font-weight:700}.di-support-header nav a{text-decoration:none}.di-support-header nav a[aria-current],.di-support-header nav a:hover{text-decoration:underline;text-underline-offset:6px;color:#e5f5ff}
+#support-content{max-width:640px;margin:36px auto 50px;padding:0 20px}#support-page-title{font-size:clamp(28px,6vw,38px);line-height:1.15;margin:0 0 24px}
+body #di-donate-modal{display:block!important;position:static!important;padding:0!important;background:none!important;inset:auto!important;z-index:auto!important}
+body #di-donate-modal .di-donate-card{width:100%;max-height:none;overflow:visible;margin:0;border:1px solid #a9cedc66;box-shadow:0 15px 45px #0003}
+#di-donate-close{display:none!important}footer{border-top:1px solid #3f739944;padding:18px;text-align:center;color:#88acc7;font-size:12px}
+a:focus-visible{outline:3px solid #83dbff;outline-offset:4px}
+@media(max-width:600px){.di-support-header{padding:18px;align-items:flex-start;flex-direction:column;gap:12px}.di-support-header nav{gap:16px}#support-content{padding:0 14px;margin-top:26px}.di-support-brand{font-size:13px}}

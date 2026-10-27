@@ -1,0 +1,15 @@
+/* Le due azioni diventano voci testuali dello stesso menu. */
+#menu.menu .menu-actions{display:contents!important}
+#menu.menu #di-download-link,#menu.menu #di-support-link{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ width:auto!important;min-width:0!important;max-width:none!important;
+ height:auto!important;min-height:44px!important;max-height:none!important;
+ padding:8px 12px!important;margin:0!important;aspect-ratio:auto!important;
+ background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+ color:#edf7ff!important;font:700 13px/1.4 system-ui,sans-serif!important;
+ text-decoration:none!important;white-space:nowrap!important;text-align:center!important;
+}
+#menu.menu #di-download-link:hover,#menu.menu #di-support-link:hover,
+#menu.menu #di-download-link[aria-current="page"]{color:#72d5ff!important;text-decoration:underline!important;text-underline-offset:7px!important}
+#menu.menu #di-download-link:focus-visible,#menu.menu #di-support-link:focus-visible{outline:2px solid #72d5ff!important;outline-offset:3px!important;border-radius:5px!important}
+@media(max-width:700px){#menu.menu #di-download-link,#menu.menu #di-support-link{font-size:12px!important;padding:8px 6px!important;white-space:normal!important}}

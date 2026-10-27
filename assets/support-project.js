@@ -84,7 +84,7 @@ async function diPost(path,body){
 async function diOpen(){diModal.classList.add('open');document.body.style.overflow='hidden';diRender();document.getElementById('di-tab-single').focus();document.dispatchEvent(new Event('di-support-open'));
  if(diData.orderId&&!diBusy){diBusy=true;diRender();try{const r=await diPost('/verify',{donationId:diData.donationId,orderId:diData.orderId});diVerified=r.verified===true;diStatus.textContent=diVerified?'Donazione verificata. Grazie per il sostegno!':'Pagamento non ancora confermato. Puoi verificarlo dopo aver completato PayPal.';}catch(_){diStatus.textContent='Verifica non disponibile. Ordine conservato.';}finally{diBusy=false;diRender();}}
 }
-function diClose(){diModal.classList.remove('open');document.body.style.overflow='';document.getElementById('donate').focus()}
+function diClose(){if(diModal.dataset.standalone==='true')return;diModal.classList.remove('open');document.body.style.overflow='';document.getElementById('donate').focus()}
 document.getElementById('donate').setAttribute('aria-label','Sostieni il progetto con PayPal');
 document.getElementById('donate').title='Sostieni il progetto';
 document.getElementById('donate').addEventListener('click',diOpen);
@@ -250,7 +250,7 @@ diReset.addEventListener('click',async()=>{
  amount.addEventListener('change',()=>{consent.checked=false;render();});consent.addEventListener('change',render);update.addEventListener('click',refresh);
  document.addEventListener('di-support-open',()=>{consent.checked=false;render();if(!monthly.hidden&&data.subscriptionId)void refresh();});
  // Mantiene il focus nel riquadro, senza interferire con i popup PayPal.
- modal.addEventListener('keydown',e=>{if(e.key!=='Tab')return;const nodes=[...modal.querySelectorAll('button,input,select,a[href],iframe')].filter(n=>!n.disabled&&n.tabIndex!==-1&&n.getClientRects().length);const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}});
+ modal.addEventListener('keydown',e=>{if(modal.dataset.standalone==='true'||e.key!=='Tab')return;const nodes=[...modal.querySelectorAll('button,input,select,a[href],iframe')].filter(n=>!n.disabled&&n.tabIndex!==-1&&n.getClientRects().length);const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}});
  window.addEventListener('focus',()=>{if(modal.classList.contains('open')&&!monthly.hidden&&data.subscriptionId&&!starting)void refresh();});
  select('single');
 })();
