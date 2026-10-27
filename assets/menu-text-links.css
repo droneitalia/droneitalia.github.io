@@ -36,7 +36,7 @@
 }
 #menu.menu >button[data-id]::before,#menu.menu .app-dropdown .app-dropdown-toggle::before,
 #menu.menu #di-download-link::before,#menu.menu #di-support-link::before{
- content:"";display:block;flex:0 0 18px;width:18px;height:18px;background:currentColor;
+ content:""!important;display:block!important;flex:0 0 18px;width:18px;height:18px;background:currentColor;
  -webkit-mask:var(--di-menu-icon) center/contain no-repeat;mask:var(--di-menu-icon) center/contain no-repeat;
 }
 #menu.menu .menu-chevron{display:none!important}
