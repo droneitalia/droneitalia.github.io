@@ -1113,12 +1113,14 @@ body:has(#comments-page:not([hidden])) #comments-page #cm-items{
  setDropdown=function(open){baseDropdown(open);mark(open?'explora':location.hash.slice(1));};
  mark(location.hash.slice(1));
 })();
-</script><script id="di-compose-in-menu">
+</script><script id="di-compose-in-community">
 (()=>{
- const menu=document.getElementById('menu'),compose=document.getElementById('di-compose-outside');
- if(!menu||!compose)return;
- const actions=menu.querySelector('.menu-actions');
- menu.insertBefore(compose,actions||null);
+ const panel=document.getElementById('comments-page'),compose=document.getElementById('di-compose-outside');
+ const heading=document.getElementById('comments-title');
+ if(!panel||!compose||!heading)return;
+ const header=document.createElement('div');header.className='di-community-header';
+ heading.insertAdjacentElement('beforebegin',header);
+ header.append(heading,compose);
  const baseShow=show,baseDropdown=setDropdown;
  function sync(){
   const visible=location.hash==='#commenti'&&dropdownPanel.hidden;
@@ -1355,4 +1357,14 @@ body:has(#comments-page:not([hidden])) #comments-page #cm-items{
 }
 html:has(#di-comment-modal:not([hidden])),body:has(#di-comment-modal:not([hidden])),
 html:has(#zoom.open),body:has(#zoom.open){overflow:hidden!important}
-</style><link rel="stylesheet" href="assets/menu-text-links.css?v=5"></body></html>
+</style><link rel="stylesheet" href="assets/menu-text-links.css?v=5"><style id="di-community-compose-header">
+#comments-page .di-community-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:0 0 8px;flex-wrap:wrap}
+#comments-page .di-community-header #comments-title{margin:0!important;flex:1 1 250px}
+#comments-page #di-compose-outside{position:static!important;transform:none!important;display:flex!important;align-items:center!important;flex:0 0 auto!important;width:auto!important;max-width:100%!important;margin:0!important;padding:0!important;text-align:left!important;z-index:auto!important}
+#comments-page #di-compose-outside[hidden]{display:none!important}
+#comments-page #di-compose-outside .di-edit-handle{display:none!important}
+#comments-page #di-compose-toggle{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;min-height:42px!important;width:auto!important;max-width:100%!important;margin:0!important;padding:10px 16px!important;border:1px solid #55bbd8!important;border-radius:10px!important;background:linear-gradient(135deg,#127c9e,#115773)!important;box-shadow:0 3px 10px #00101f33!important;color:#f5fcff!important;font:700 13px/1.4 system-ui,sans-serif!important;text-decoration:none!important;white-space:normal!important;cursor:pointer!important}
+#comments-page #di-compose-toggle:hover{background:linear-gradient(135deg,#168db1,#176681)!important;border-color:#93e2f5!important}
+#comments-page #di-compose-toggle:focus-visible{outline:2px solid #b0edff!important;outline-offset:3px!important}
+@media(max-width:600px){#comments-page .di-community-header{flex-direction:column;gap:12px;margin-bottom:14px}#comments-page .di-community-header #comments-title{flex:0 0 auto}#comments-page #di-compose-outside{align-self:flex-start!important}}
+</style></body></html>
