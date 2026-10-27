@@ -1,15 +1,57 @@
-/* Le due azioni diventano voci testuali dello stesso menu. */
-#menu.menu .menu-actions{display:contents!important}
-#menu.menu #di-download-link,#menu.menu #di-support-link{
- display:inline-flex!important;align-items:center!important;justify-content:center!important;
- width:auto!important;min-width:0!important;max-width:none!important;
- height:auto!important;min-height:44px!important;max-height:none!important;
- padding:8px 12px!important;margin:0!important;aspect-ratio:auto!important;
- background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
- color:#edf7ff!important;font:700 13px/1.4 system-ui,sans-serif!important;
- text-decoration:none!important;white-space:nowrap!important;text-align:center!important;
+/* Navigazione compatta: riquadri con icone, direzione scelta dall’utente. */
+#menu.menu{
+ display:flex!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;
+ gap:8px!important;column-gap:8px!important;row-gap:8px!important;
+ width:100%!important;max-width:100%!important;margin:8px auto 22px!important;
+ padding:8px 0!important;border-bottom:0!important;overflow:visible!important;
 }
-#menu.menu #di-download-link:hover,#menu.menu #di-support-link:hover,
-#menu.menu #di-download-link[aria-current="page"]{color:#72d5ff!important;text-decoration:underline!important;text-underline-offset:7px!important}
-#menu.menu #di-download-link:focus-visible,#menu.menu #di-support-link:focus-visible{outline:2px solid #72d5ff!important;outline-offset:3px!important;border-radius:5px!important}
-@media(max-width:700px){#menu.menu #di-download-link,#menu.menu #di-support-link{font-size:12px!important;padding:8px 6px!important;white-space:normal!important}}
+#menu.menu .menu-actions{display:contents!important}
+#menu.menu .app-dropdown{display:block!important;flex:0 0 auto!important;width:auto!important;min-width:0!important;margin:0!important;align-self:stretch!important}
+#menu.menu >button[data-id],
+#menu.menu .app-dropdown .app-dropdown-toggle,
+#menu.menu #di-download-link,#menu.menu #di-support-link{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;
+ flex:0 0 auto!important;width:auto!important;min-width:0!important;max-width:none!important;
+ height:46px!important;min-height:46px!important;max-height:46px!important;
+ box-sizing:border-box!important;padding:0 15px!important;margin:0!important;
+ background:linear-gradient(160deg,rgba(22,64,95,.92),rgba(7,31,54,.94))!important;
+ border:1px solid rgba(105,187,226,.45)!important;border-radius:10px!important;
+ box-shadow:0 3px 10px rgba(0,8,22,.18)!important;
+ color:#e9f5ff!important;font:700 13px/1.35 system-ui,sans-serif!important;
+ text-decoration:none!important;white-space:nowrap!important;letter-spacing:0!important;
+ cursor:pointer!important;transition:background .18s,border-color .18s,box-shadow .18s!important;
+}
+#menu.menu >button[data-id]:hover,#menu.menu .app-dropdown .app-dropdown-toggle:hover,
+#menu.menu #di-download-link:hover,#menu.menu #di-support-link:hover{
+ background:linear-gradient(160deg,#1c5276,#103d5b)!important;border-color:#78cbed!important;color:#fff!important;
+}
+#menu.menu >button[data-id].active,#menu.menu .app-dropdown .app-dropdown-toggle.active,
+#menu.menu .app-dropdown .app-dropdown-toggle[aria-expanded="true"],#menu.menu #di-download-link[aria-current="page"]{
+ background:linear-gradient(140deg,#167ba3,#125274)!important;border:1px solid #7fd4f1!important;
+ color:#fff!important;box-shadow:0 3px 14px rgba(20,161,213,.22)!important;
+}
+#menu.menu >button[data-id]:focus-visible,#menu.menu .app-dropdown .app-dropdown-toggle:focus-visible,
+#menu.menu #di-download-link:focus-visible,#menu.menu #di-support-link:focus-visible{
+ outline:2px solid #b0edff!important;outline-offset:3px!important;
+}
+#menu.menu >button[data-id]::before,#menu.menu .app-dropdown .app-dropdown-toggle::before,
+#menu.menu #di-download-link::before,#menu.menu #di-support-link::before{
+ content:"";display:block;flex:0 0 18px;width:18px;height:18px;background:currentColor;
+ -webkit-mask:var(--di-menu-icon) center/contain no-repeat;mask:var(--di-menu-icon) center/contain no-repeat;
+}
+#menu.menu .menu-chevron{display:none!important}
+@media(max-width:700px){
+ #menu.menu{gap:7px!important;padding:6px 0!important;margin-bottom:18px!important}
+ #menu.menu >button[data-id],#menu.menu .app-dropdown .app-dropdown-toggle,
+ #menu.menu #di-download-link,#menu.menu #di-support-link{
+  height:44px!important;min-height:44px!important;max-height:44px!important;
+  padding:0 11px!important;font-size:12px!important;gap:6px!important;
+ }
+ #menu.menu .app-dropdown{align-self:auto!important}
+}
+@media(prefers-reduced-motion:reduce){#menu.menu button,#menu.menu a{transition:none!important}}
+#menu.menu >button[data-id="progetto"]{--di-menu-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m3%2010%209-7%209%207v10a1%201%200%200%201-1%201h-5v-7H9v7H4a1%201%200%200%201-1-1z%22%2F%3E%3C%2Fsvg%3E")}
+#menu.menu .app-dropdown .app-dropdown-toggle{--di-menu-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%223%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221%22%2F%3E%3Crect%20x%3D%223%22%20y%3D%2214%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221%22%2F%3E%3C%2Fsvg%3E")}
+#menu.menu >button[data-id="commenti"]{--di-menu-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M21%2011.5a8.4%208.4%200%200%201-.9%203.8A8.5%208.5%200%200%201%2012.5%2020a8.4%208.4%200%200%201-3.8-.9L3%2021l1.9-5.7a8.4%208.4%200%200%201-.9-3.8A8.5%208.5%200%200%201%208.7%203.9a8.4%208.4%200%200%201%203.8-.9h.5a8.5%208.5%200%200%201%208%208v.5z%22%2F%3E%3C%2Fsvg%3E")}
+#menu.menu #di-download-link{--di-menu-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%203v12m-5-5%205%205%205-5M4%2017v4h16v-4%22%2F%3E%3C%2Fsvg%3E")}
+#menu.menu #di-support-link{--di-menu-icon:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M20.8%204.6a5.5%205.5%200%200%200-7.8%200L12%205.7l-1.1-1.1a5.5%205.5%200%200%200-7.8%207.8L12%2021l8.8-8.6a5.5%205.5%200%200%200%200-7.8z%22%2F%3E%3C%2Fsvg%3E")}
