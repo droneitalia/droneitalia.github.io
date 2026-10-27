@@ -10,7 +10,7 @@
 #menu.menu >button[data-id],
 #menu.menu .app-dropdown .app-dropdown-toggle,
 #menu.menu #di-download-link,#menu.menu #di-support-link{
- display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;
+ display:inline-flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:8px!important;
  flex:0 0 auto!important;width:auto!important;min-width:0!important;max-width:none!important;
  height:46px!important;min-height:46px!important;max-height:46px!important;
  box-sizing:border-box!important;padding:0 15px!important;margin:0!important;
