@@ -1,0 +1,19 @@
+.di-donate-card{width:min(100%,560px);padding:28px;background:#f3f8fc;max-height:90dvh;overscroll-behavior:contain;color-scheme:light}
+.di-donate-card [hidden]{display:none!important}
+.di-donate-card h2{font-size:26px;line-height:1.2;margin-top:6px}
+.di-donate-card .di-support-intro{color:#4b6477;margin-bottom:22px}
+.di-support-tabs{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:20px 0}
+.di-support-tabs button{border:1px solid #bdd3e3;background:#fff;color:#234d6b;border-radius:13px;padding:14px 8px;font:700 14px/1.4 system-ui,sans-serif}
+.di-support-tabs button[aria-selected=true]{background:#103b59;border-color:#103b59;color:#fff;box-shadow:0 4px 12px #103b591f}
+.di-support-tabs span{display:block;font-size:24px;margin-bottom:3px}
+.di-support-panel{padding:18px;border:1px solid #d4e3ed;border-radius:15px;background:white}
+.di-support-panel h3{font-size:19px;color:#183a50;margin:0 0 10px}
+.di-donate-card .di-monthly-consent{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.55;font-weight:500;margin:20px 0}
+.di-monthly-consent input{width:20px;height:20px;flex:0 0 20px;margin:2px 0;accent-color:#067c8c}
+#di-monthly-buttons{min-height:48px;margin-top:16px;position:relative;z-index:1}
+.di-monthly-manage{display:inline-block;margin-top:16px;color:#176b83;text-decoration:underline;font-size:14px}
+#di-monthly-status{font-size:14px;overflow-wrap:anywhere;color:#37566c}
+.di-donate-card .di-support-free{margin:20px 0 0;font-size:13px;text-align:center;color:#557082}
+.di-donate-card :focus-visible{outline:3px solid #167ea5;outline-offset:3px}
+.di-donate-x{border-radius:50%;width:40px;height:40px;line-height:1;background:#e5eff5;top:13px;right:13px}
+@media(max-width:480px){.di-donate-card{padding:24px 16px}.di-support-panel{padding:15px}.di-donate-card h2{font-size:23px}}

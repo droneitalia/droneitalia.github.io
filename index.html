@@ -730,111 +730,6 @@ phoneEl.addEventListener('click',openZoom);phoneEl.addEventListener('keydown',e=
 document.getElementById('zoom-close').addEventListener('click',closeZoom);zoomEl.addEventListener('click',e=>{if(e.target===zoomEl)closeZoom()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&zoomEl.classList.contains('open'))closeZoom()});
 
 // PayPal Live: stesso endpoint e stessi importi della versione Android.
-const DI_API='https://drone-italia-donazioni.turni-vigilanza-pdura.workers.dev';
-const DI_KEY='di_website_donation_live_v1'; // Separato dai dati dell'app e da Sandbox.
-const diModal=document.createElement('div');
-diModal.id='di-donate-modal';
-diModal.innerHTML=`<section class="di-donate-card" role="dialog" aria-modal="true" aria-labelledby="di-donate-title">
-<button type="button" class="di-donate-x" id="di-donate-close" aria-label="Chiudi">×</button>
-<h2 id="di-donate-title">❤️ Sostieni Drone Italia</h2>
-<p>Seleziona un importo. La donazione è volontaria e si completa su PayPal.</p>
-<label for="di-donate-amount">Importo della donazione</label>
-<select id="di-donate-amount"><option value="1">1 €</option><option value="2">2 €</option><option value="5" selected>5 €</option><option value="10">10 €</option><option value="20">20 €</option></select>
-<button type="button" class="di-donate-pay" id="di-donate-start">Continua su PayPal ↗</button>
-<button type="button" class="di-donate-secondary" id="di-donate-verify" hidden>Verifica pagamento</button>
-<button type="button" class="di-donate-secondary" id="di-donate-reset" hidden>Abbandona ordine in sospeso</button>
-<p id="di-donate-status" role="status" aria-live="polite"></p>
-<small>Non inserire dati di pagamento su questo sito. Il pagamento viene autorizzato su PayPal.</small>
-</section>`;
-document.body.appendChild(diModal);
-const diStyle=document.createElement('style');
-diStyle.textContent=`
-#di-donate-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(2,12,25,.78);padding:18px;align-items:center;justify-content:center}
-#di-donate-modal.open{display:flex}
-.di-donate-card{position:relative;box-sizing:border-box;width:min(100%,410px);max-height:90vh;overflow:auto;border-radius:20px;background:#fff;color:#183a50;padding:24px;box-shadow:0 20px 60px #0007}
-.di-donate-card h2{margin:0 35px 12px 0;font-size:23px}
-.di-donate-card p{line-height:1.55;font-size:14px}
-.di-donate-card label{display:block;font-weight:700;margin:18px 0 8px}
-.di-donate-card select{box-sizing:border-box;width:100%;padding:12px;font-size:18px;border:1px solid #b5cce0;border-radius:10px;background:#fff;color:#183a50}
-.di-donate-card button{cursor:pointer}
-.di-donate-card button:disabled{opacity:.55;cursor:wait}
-.di-donate-x{position:absolute;right:13px;top:12px;background:none;border:0;font-size:30px;color:#365c79}
-.di-donate-pay{display:block;width:100%;background:#0877d9;color:white;border:0;border-radius:10px;padding:13px;margin:15px 0 8px;font-weight:750;font-size:15px}
-.di-donate-secondary{display:block;width:100%;background:#e8f2fb;color:#18527e;border:1px solid #bdd4e6;border-radius:10px;padding:11px;margin-top:8px}
-#di-donate-status{overflow-wrap:anywhere;color:#37566c}
-.di-donate-card small{display:block;color:#60758a;line-height:1.5}
-`;
-document.head.appendChild(diStyle);
-let diData;
-try{diData=JSON.parse(localStorage.getItem(DI_KEY)||'{}')}catch(e){diData={}}
-if(!/^[a-f0-9]{32,64}$/i.test(diData.donationId||'')){
- const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);
- diData={donationId:Array.from(bytes,x=>x.toString(16).padStart(2,'0')).join('')};
- localStorage.setItem(DI_KEY,JSON.stringify(diData));
-}
-const diSave=()=>localStorage.setItem(DI_KEY,JSON.stringify(diData));
-const diStatus=document.getElementById('di-donate-status');
-const diStart=document.getElementById('di-donate-start');
-const diVerify=document.getElementById('di-donate-verify');
-const diReset=document.getElementById('di-donate-reset');
-let diBusy=false,diVerified=false;
-function diRender(){
- diVerify.hidden=!diData.orderId||diVerified;
- diReset.hidden=!diData.orderId||diVerified;
- diStart.disabled=diBusy||!!diData.orderId||diVerified;
- diVerify.disabled=diBusy;
- diReset.disabled=diBusy;
- diStart.textContent=diVerified?'❤️ Grazie per il sostegno':'Continua su PayPal ↗';
- if(diData.orderId&&!diVerified&&!diStatus.textContent)diStatus.textContent='Hai una donazione in attesa. Completa il pagamento su PayPal e poi verifica.';
-}
-async function diPost(path,body){
- const response=await fetch(DI_API+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
- let data;try{data=await response.json()}catch(e){throw new Error('Risposta non valida dal servizio donazioni')}
- if(!response.ok)throw new Error(data.error||'Servizio temporaneamente non disponibile');
- return data;
-}
-function diOpen(){diModal.classList.add('open');document.body.style.overflow='hidden';diRender();document.getElementById('di-donate-amount').focus()}
-function diClose(){diModal.classList.remove('open');document.body.style.overflow='';document.getElementById('donate').focus()}
-document.getElementById('donate').addEventListener('click',diOpen);
-document.getElementById('di-donate-close').addEventListener('click',diClose);
-diModal.addEventListener('click',e=>{if(e.target===diModal)diClose()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&diModal.classList.contains('open'))diClose()});
-diStart.addEventListener('click',async()=>{
- if(diBusy||diData.orderId||diVerified)return;
- diBusy=true;diRender();diStatus.textContent='Preparazione del pagamento sicuro…';
- try{
-  const result=await diPost('/create-order',{donationId:diData.donationId,amount:Number(document.getElementById('di-donate-amount').value)});
-  if(!result.orderId||!/^https:\/\//.test(result.approvalUrl||''))throw new Error('Risposta PayPal non valida');
-  const approval=new URL(result.approvalUrl);
-  if(!/(^|\.)paypal\.com$/.test(approval.hostname))throw new Error('Destinazione PayPal non valida');
-  diData.orderId=result.orderId;diSave();
-  diStatus.textContent='Completa il pagamento su PayPal. Al ritorno, premi “Verifica pagamento”.';
-  window.location.assign(approval.href);
- }catch(e){
-  diStatus.textContent='Impossibile avviare il pagamento: '+e.message+'. Nessun pagamento è stato avviato. Se apri il file HTML direttamente dal telefono, potrebbe essere necessario pubblicare il sito su HTTPS.';
- }finally{diBusy=false;diRender()}
-});
-diVerify.addEventListener('click',async()=>{
- if(diBusy||!diData.orderId)return;
- diBusy=true;diRender();diStatus.textContent='Verifica con PayPal in corso…';
- try{
-  const result=await diPost('/capture-order',{donationId:diData.donationId,orderId:diData.orderId});
-  if(result.verified===true){diVerified=true;diStatus.textContent='Donazione verificata da PayPal. Grazie!'}
-  else diStatus.textContent='Pagamento non ancora confermato. Completa l’autorizzazione su PayPal e riprova.';
- }catch(e){diStatus.textContent='Verifica non disponibile: '+e.message+'. L’ordine resta memorizzato.'}
- finally{diBusy=false;diRender()}
-});
-diReset.addEventListener('click',async()=>{
- if(diBusy||!diData.orderId||!confirm('Abbandona questo ordine solo se NON hai autorizzato il pagamento. Non annulla un pagamento PayPal. Continuare?'))return;
- diBusy=true;diRender();
- try{
-  const result=await diPost('/verify',{donationId:diData.donationId,orderId:diData.orderId});
-  if(result.verified===true){diVerified=true;diStatus.textContent='Il pagamento risulta confermato. Ordine conservato.'}
-  else{delete diData.orderId;diSave();diStatus.textContent='Ordine in sospeso rimosso dal sito. Nessun pagamento PayPal è stato annullato.'}
- }catch(e){diStatus.textContent='Non è stato possibile controllare lo stato: ordine conservato per sicurezza.'}
- finally{diBusy=false;diRender()}
-});
-
 show(location.hash.slice(1)||'progetto');
 </script>
 <style>
@@ -1460,4 +1355,4 @@ body:has(#comments-page:not([hidden])) #comments-page #cm-items{
 }
 html:has(#di-comment-modal:not([hidden])),body:has(#di-comment-modal:not([hidden])),
 html:has(#zoom.open),body:has(#zoom.open){overflow:hidden!important}
-</style></body></html>
+</style><link rel="stylesheet" href="assets/support-project.css?v=1"><script src="assets/support-project.js?v=1"></script></body></html>
