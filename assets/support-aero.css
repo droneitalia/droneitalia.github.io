@@ -69,3 +69,9 @@ body.di-support-aero footer{border-color:#54a6c02e;color:#8eafc8}
  body.di-support-aero .di-support-tabs{gap:8px}
  body.di-support-aero .di-support-tabs button{font-size:15px!important;letter-spacing:.5px;padding:13px 7px!important}
 }
+
+body.di-support-aero #di-donate-custom{box-sizing:border-box;width:100%;padding:13px;border:1px solid #397e9b;border-radius:3px;background:#08283d;color:#e3f5fc;font:18px/1.4 system-ui,sans-serif}
+body.di-support-aero #di-donate-custom:focus-visible{outline:2px solid #94e5f5;outline-offset:3px}
+body.di-support-aero #di-donate-custom[aria-invalid="true"]{border-color:#ff9d93}
+body.di-support-aero #di-donate-custom-error{color:#ffb8af}
+body.di-support-aero #di-donate-custom-hint{color:#b4d4e2;margin-top:7px}

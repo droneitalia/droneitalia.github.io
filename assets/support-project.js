@@ -15,7 +15,8 @@ diModal.innerHTML=`<section class="di-donate-card" role="dialog" aria-modal="tru
 <div class="di-support-panel" role="tabpanel" id="di-support-single" aria-labelledby="di-tab-single">
 <h3>Donazione singola</h3><p>Un contributo libero, ogni volta che vuoi. Si completa su PayPal.</p>
 <label for="di-donate-amount">Importo della donazione</label>
-<select id="di-donate-amount"><option value="1">1 €</option><option value="2">2 €</option><option value="5" selected>5 €</option><option value="10">10 €</option><option value="20">20 €</option></select>
+<select id="di-donate-amount"><option value="1">1 €</option><option value="2">2 €</option><option value="5" selected>5 €</option><option value="10">10 €</option><option value="20">20 €</option><option value="custom">Altro importo</option></select>
+<div id="di-donate-custom-wrap" hidden><label for="di-donate-custom">Importo libero in €</label><input id="di-donate-custom" type="text" inputmode="decimal" autocomplete="off" maxlength="6" placeholder="Es. 7,50" aria-describedby="di-donate-custom-hint di-donate-custom-error"><small id="di-donate-custom-hint">Da 1 a 500 €, con massimo due decimali.</small><p id="di-donate-custom-error" role="alert" hidden></p></div>
 <button type="button" class="di-donate-pay" id="di-donate-start">Continua su PayPal ↗</button>
 <button type="button" class="di-donate-secondary" id="di-donate-verify" hidden>Verifica pagamento</button>
 <button type="button" class="di-donate-secondary" id="di-donate-reset" hidden>Abbandona ordine in sospeso</button>
@@ -43,6 +44,9 @@ diStyle.textContent=`
 .di-donate-card h2{margin:0 35px 12px 0;font-size:23px}
 .di-donate-card p{line-height:1.55;font-size:14px}
 .di-donate-card label{display:block;font-weight:700;margin:18px 0 8px}
+.di-donate-card input#di-donate-custom{box-sizing:border-box;width:100%;padding:12px;font-size:18px;border:1px solid #b5cce0;border-radius:10px;background:#fff;color:#183a50}
+#di-donate-custom-wrap[hidden],#di-donate-custom-error[hidden]{display:none!important}
+#di-donate-custom-error{color:#b42318}
 .di-donate-card select{box-sizing:border-box;width:100%;padding:12px;font-size:18px;border:1px solid #b5cce0;border-radius:10px;background:#fff;color:#183a50}
 .di-donate-card button{cursor:pointer}
 .di-donate-card button:disabled{opacity:.55;cursor:wait}
@@ -66,7 +70,19 @@ const diStart=document.getElementById('di-donate-start');
 const diVerify=document.getElementById('di-donate-verify');
 const diReset=document.getElementById('di-donate-reset');
 let diBusy=false,diVerified=false;
+function diParseDonationAmount(value){
+ const text=String(value==null?'':value).trim();
+ if(!/^\d{1,3}(?:[.,]\d{1,2})?$/.test(text))return null;
+ const parts=text.replace(',','.').split('.');
+ const cents=Number(parts[0])*100+Number(((parts[1]||'')+'00').slice(0,2));
+ return cents>=100&&cents<=50000?cents/100:null;
+}
+const diAmount=document.getElementById('di-donate-amount'),diCustom=document.getElementById('di-donate-custom'),diCustomWrap=document.getElementById('di-donate-custom-wrap'),diAmountError=document.getElementById('di-donate-custom-error');
+function diClearAmountError(){diCustom.removeAttribute('aria-invalid');diAmountError.hidden=true;diAmountError.textContent='';}
+diAmount.addEventListener('change',()=>{diCustomWrap.hidden=diAmount.value!=='custom';diClearAmountError();if(!diCustomWrap.hidden)diCustom.focus();});
+diCustom.addEventListener('input',diClearAmountError);
 function diRender(){
+ const amountLocked=diBusy||(!!diData.orderId&&!diVerified);diAmount.disabled=amountLocked;diCustom.disabled=amountLocked;
  diVerify.hidden=!diData.orderId||diVerified;
  diReset.hidden=!diData.orderId||diVerified;
  diStart.disabled=diBusy||(!!diData.orderId&&!diVerified);
@@ -93,6 +109,9 @@ diModal.addEventListener('click',e=>{if(e.target===diModal)diClose()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&diModal.classList.contains('open'))diClose()});
 diStart.addEventListener('click',async()=>{
  if(diBusy||(diData.orderId&&!diVerified))return;
+ const selectedAmount=diParseDonationAmount(diAmount.value==='custom'?diCustom.value:diAmount.value);
+ if(selectedAmount===null){diAmountError.textContent='Inserisci un importo da 1 a 500 €, con massimo due decimali.';diAmountError.hidden=false;diCustom.setAttribute('aria-invalid','true');diStatus.textContent='Controlla l’importo della donazione.';diCustom.focus();return;}
+ diClearAmountError();
  if(diVerified){
   const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);
   diData={previous:{orderId:diData.orderId,donationId:diData.donationId},donationId:Array.from(bytes,x=>x.toString(16).padStart(2,'0')).join('')};
@@ -100,7 +119,7 @@ diStart.addEventListener('click',async()=>{
  }
  diBusy=true;diRender();diStatus.textContent='Preparazione del pagamento sicuro…';
  try{
-  const result=await diPost('/create-order',{donationId:diData.donationId,amount:Number(document.getElementById('di-donate-amount').value)});
+  const result=await diPost('/create-order',{donationId:diData.donationId,amount:selectedAmount});
   if(!result.orderId||!/^https:\/\//.test(result.approvalUrl||''))throw new Error('Risposta PayPal non valida');
   const approval=new URL(result.approvalUrl);
   if(approval.protocol!=='https:'||!['www.paypal.com','paypal.com'].includes(approval.hostname)||approval.username||approval.password||approval.port)throw new Error('Destinazione PayPal non valida');
