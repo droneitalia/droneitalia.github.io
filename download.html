@@ -42,12 +42,27 @@ footer{position:fixed;bottom:0;left:0;right:0;max-width:none;padding:8px 12px;te
   const url=safeUrl(r.html_url);if(url){const link=el('a','Dettagli della distribuzione su GitHub','release-link');link.href=url;link.target='_blank';link.rel='noopener noreferrer';card.append(link);}
   return card;
  }
+ function archiveRows(r){
+  const list=el('div',undefined,'di-archive-release');list.setAttribute('role','listitem');
+  for(const a of r.files){
+   const row=el('div',undefined,'di-archive-row'),copy=el('div',undefined,'di-archive-copy');
+   const title=el('h3',undefined,'di-archive-title');title.append(el('span','Drone Italia'),document.createTextNode(' · '),el('span',r.tag_name||r.name||'','di-archive-version'));
+   const published=new Date(r.published_at),time=el('time',Number.isNaN(published.getTime())?'Data non disponibile':date.format(published),'di-archive-date');
+   if(!Number.isNaN(published.getTime()))time.dateTime=r.published_at;
+   copy.append(title,time);
+   const link=el('a',undefined,'di-archive-download');link.href=safeUrl(a.browser_download_url,true);link.setAttribute('aria-label','Scarica '+a.name);link.title='Scarica '+a.name;
+   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.8');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');
+   const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5');svg.append(path);link.append(svg);
+   row.append(copy,link);list.append(row);
+  }
+  return list;
+ }
  function empty(){latest.replaceChildren(el('p','Ultima versione','badge'),el('h2','Il download sarà disponibile qui'),el('p','Non ci sono ancora versioni APK pubblicate. Troverai qui il file, il numero di versione e la data di distribuzione appena disponibili.','empty'));latest.querySelector('h2').id='latest-title';previous.replaceChildren(el('p','Nessuna versione precedente disponibile.','empty'));}
  async function load(){
   try{const response=await fetch(API,{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});if(!response.ok)throw Error('Elenco temporaneamente non disponibile');const data=await response.json();if(!Array.isArray(data))throw Error('Formato non valido');
    const releases=data.filter(r=>!r.draft&&!r.prerelease).map(r=>({...r,files:(r.assets||[]).filter(a=>typeof a.name==='string'&&/\.apk$/i.test(a.name)&&safeUrl(a.browser_download_url,true))})).filter(r=>r.files.length).sort((a,b)=>Date.parse(b.published_at)-Date.parse(a.published_at));
-   previous.replaceChildren();if(!releases.length){empty();status.textContent='';return;}
-   releaseCard(releases[0],true);for(const r of releases.slice(1))previous.append(releaseCard(r,false));
+   previous.setAttribute('role','list');previous.replaceChildren();if(!releases.length){empty();status.textContent='';return;}
+   releaseCard(releases[0],true);for(const r of releases.slice(1))previous.append(archiveRows(r));
    if(releases.length===1)previous.append(el('p','Non ci sono altre versioni APK pubblicate.','empty'));
    status.textContent='Versioni e file aggiornati dalle distribuzioni ufficiali di Drone Italia.';
   }catch(_){latest.replaceChildren(el('h2','Elenco download temporaneamente non disponibile'),el('p','Riprova tra poco oppure consulta le distribuzioni ufficiali.','empty'));latest.querySelector('h2').id='latest-title';const link=el('a','Apri i download su GitHub','release-link');link.href='https://github.com/dura1472p-cpu/Drone-Italia-download/releases';link.target='_blank';link.rel='noopener noreferrer';latest.append(link);previous.replaceChildren(el('p','Archivio momentaneamente non disponibile.','empty'));status.textContent='Non è stato possibile aggiornare l’elenco.';}
@@ -67,4 +82,16 @@ footer{position:fixed;bottom:0;left:0;right:0;max-width:none;padding:8px 12px;te
  window.addEventListener('focus',refresh);
  window.addEventListener('pageshow',refresh);
 })();
-</script><link rel="stylesheet" href="assets/centered-copy.css?v=1"><link rel="stylesheet" href="assets/explore-hub.css?v=3"></body></html>
+</script><link rel="stylesheet" href="assets/centered-copy.css?v=1"><link rel="stylesheet" href="assets/explore-hub.css?v=3"><style id="di-compact-release-archive">
+#previous{display:block}
+#previous .di-archive-release{margin:0;padding:0;border:0;background:none;box-shadow:none}
+#previous .di-archive-row{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 0;border-bottom:1px solid rgba(98,195,225,.32);text-align:left}
+#previous .di-archive-copy{min-width:0;padding:2px 0 2px 18px;border-left:3px solid #48d8ea}
+#previous .di-archive-title{display:block;margin:0 0 5px!important;padding:0!important;font-family:"DI Rajdhani","Arial Narrow",system-ui,sans-serif;font-size:23px!important;font-weight:600;line-height:1.35!important;text-transform:uppercase;letter-spacing:.04em;color:#d8f1fa;text-align:left!important;overflow-wrap:anywhere}
+#previous .di-archive-date{display:block;font-size:16px;line-height:1.5;color:#a9c6d5}
+#previous a.di-archive-download{display:flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;min-height:44px;padding:0;margin:0;color:#48d8ea;background:transparent;border:0;border-radius:4px;box-shadow:none;text-decoration:none;transition:color .18s,background .18s}
+#previous .di-archive-download svg{display:block;width:24px;height:24px}
+#previous a.di-archive-download:hover{color:#b7f8ff;background:rgba(72,216,234,.08)}
+#previous a.di-archive-download:focus-visible{outline:2px solid #48d8ea;outline-offset:3px}
+@media(max-width:600px){#previous .di-archive-row{gap:10px;padding:16px 0}#previous .di-archive-copy{padding-left:12px}#previous .di-archive-title{font-size:20px!important}#previous .di-archive-date{font-size:15px}}
+</style></body></html>
