@@ -1071,7 +1071,14 @@ body:has(#comments-page:not([hidden])) #comments-page #cm-items{
   const dialog=el('dialog',undefined,'di-release-dialog');dialog.setAttribute('aria-labelledby','di-release-dialog-title');
   const head=el('div',undefined,'di-release-dialog-head'),title=el('h2','Novità di questa versione');title.id='di-release-dialog-title';
   const close=el('button','Chiudi','di-release-close');close.type='button';head.append(title,close);
-  dialog.append(head,el('p',r.name||r.tag_name||'Drone Italia','di-release-dialog-version'),el('div',r.body,'di-release-dialog-body'));
+  const body=el('div',undefined,'di-release-dialog-body');let list=null;
+  for(const line of r.body.split(/\r?\n/)){
+   const clean=line.replace(/\*\*([^*]+)\*\*/g,'$1');
+   if(/^#{1,6}\s/.test(clean)){list=null;body.append(el('h3',clean.replace(/^#{1,6}\s+/,'')));}
+   else if(/^[-*]\s/.test(clean)){if(!list){list=el('ul');body.append(list);}list.append(el('li',clean.replace(/^[-*]\s+/,'')));}
+   else if(clean.trim()){list=null;body.append(el('p',clean));}
+  }
+  dialog.append(head,el('p',r.name||r.tag_name||'Drone Italia','di-release-dialog-version'),body);
   document.body.append(dialog);
   close.addEventListener('click',()=>dialog.close());
   dialog.addEventListener('click',e=>{if(e.target===dialog){const b=dialog.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)dialog.close();}});
@@ -1498,4 +1505,4 @@ html body .di-release-dialog-version{color:#7bdbed;font-size:16px;text-align:lef
 html body .di-release-dialog-body{white-space:pre-wrap;overflow-wrap:anywhere;text-align:left;font:16px/1.65 system-ui,sans-serif}
 html body .di-release-notes-trigger:focus-visible,html body .di-release-close:focus-visible{outline:2px solid #83eeff;outline-offset:4px}
 @media(max-width:600px){html body dialog.di-release-dialog{padding:18px}html body .di-release-dialog-head h2{font-size:21px}}
-</style></body></html>
+</style><style>html body .di-release-dialog-body{white-space:normal}html body .di-release-dialog-body h3{font:700 18px/1.4 system-ui,sans-serif;text-align:left;margin:20px 0 8px;color:#73d8e9;text-transform:none;letter-spacing:0}html body .di-release-dialog-body ul{padding-left:22px;margin:8px 0 16px}html body .di-release-dialog-body p{font:16px/1.65 system-ui,sans-serif;text-align:left;margin:14px 0 0}</style></body></html>
