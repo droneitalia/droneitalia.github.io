@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="it"><head><script>window.diDownloadRequested=location.hash==='#download';</script><meta name="referrer" content="no-referrer"><script id="di-community-return">
+<html lang="it"><head><script>window.diDownloadRequested=location.hash==='#download';window.diExploreRequested=location.hash==='#explora';</script><meta name="referrer" content="no-referrer"><script id="di-community-return">
 (()=>{
  const fields=new URLSearchParams(location.hash.slice(1));
  const returned=fields.get('di_session');
@@ -704,7 +704,7 @@ dropdownToggle.setAttribute('aria-controls','app-dropdown-panel');
 dropdownToggle.innerHTML='Esplora le sezioni dell’app <span aria-hidden="true" class="menu-chevron">⌄</span>';
 const dropdownPanel=document.createElement('div');dropdownPanel.id='app-dropdown-panel';dropdownPanel.className='app-dropdown-panel';dropdownPanel.hidden=true;
 function setDropdown(open){const wasOpen=!dropdownPanel.hidden;dropdownPanel.hidden=!open;dropdownToggle.setAttribute('aria-expanded',String(open));dropdown.classList.toggle('open',open);document.body.classList.toggle('di-menu-expanded',open);/* Chiusura menu: conserva la sezione selezionata. */}
-dropdownToggle.addEventListener('click',()=>{setDropdown(dropdownPanel.hidden);});
+dropdownToggle.addEventListener('click',()=>{show('explora');});
 dropdown.append(dropdownToggle,dropdownPanel);
 pages.forEach(p=>{
  const b=document.createElement('button');b.type='button';b.textContent=p.name;b.dataset.id=p.id;
@@ -1367,4 +1367,4 @@ html:has(#zoom.open),body:has(#zoom.open){overflow:hidden!important}
 #comments-page #di-compose-toggle:hover{background:linear-gradient(135deg,#168db1,#176681)!important;border-color:#93e2f5!important}
 #comments-page #di-compose-toggle:focus-visible{outline:2px solid #b0edff!important;outline-offset:3px!important}
 @media(max-width:600px){#comments-page .di-community-header{flex-direction:column;gap:12px;margin-bottom:14px}#comments-page .di-community-header #comments-title{flex:0 0 auto}#comments-page #di-compose-outside{align-self:flex-start!important}}
-</style><link rel="stylesheet" href="assets/panels-aero.css?v=1"><link rel="stylesheet" href="assets/centered-copy.css?v=1"><link rel="stylesheet" href="assets/aero-copy.css?v=1"><script src="assets/aero-copy.js?v=1"></script><link rel="stylesheet" href="assets/zoom-icon.css?v=2"></body></html>
+</style><link rel="stylesheet" href="assets/panels-aero.css?v=1"><link rel="stylesheet" href="assets/centered-copy.css?v=1"><link rel="stylesheet" href="assets/aero-copy.css?v=1"><script src="assets/aero-copy.js?v=1"></script><link rel="stylesheet" href="assets/zoom-icon.css?v=2"><link rel="stylesheet" href="assets/explore-hub.css?v=1"><script src="assets/explore-hub.js?v=1"></script></body></html>
