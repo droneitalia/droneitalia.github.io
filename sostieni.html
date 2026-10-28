@@ -9,9 +9,18 @@
 <link rel="stylesheet" href="assets/support-aero.css?v=3">
 </head>
 <body class="di-support-aero di-centered-copy">
-<header class="di-support-header"><a class="di-support-brand" href="./#progetto">DRONE ITALIA</a><nav aria-label="Menu principale"><a href="./#progetto">Home</a><a href="./#download">Download</a><a href="sostieni.html" aria-current="page">Sostieni il progetto</a></nav></header>
+<header class="di-support-header"><nav aria-label="Torna alla home"><a class="di-support-home" href="./#progetto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>Drone Italia</a></nav></header>
 <main id="support-content"><h1 id="support-page-title">Sostieni il progetto</h1><p id="support-loading">Caricamento delle opzioni di sostegno…</p><button type="button" id="donate" hidden>Apri opzioni di sostegno</button><noscript><p>Abilita JavaScript per scegliere donazione singola o sostegno mensile.</p></noscript></main>
 <footer>Drone Italia · Community</footer>
 <script src="assets/support-project.js?v=3"></script>
 <script src="assets/support-page.js?v=1"></script>
-<link rel="stylesheet" href="assets/centered-copy.css?v=1"><link rel="stylesheet" href="assets/explore-hub.css?v=3"></body></html>
+<link rel="stylesheet" href="assets/centered-copy.css?v=1"><link rel="stylesheet" href="assets/explore-hub.css?v=3"><style id="di-support-home-navigation">
+body.di-support-aero .di-support-header{display:flex;justify-content:center;align-items:center;border:0;padding:24px 16px 0}
+body.di-support-aero .di-support-header nav{display:flex;justify-content:center}
+body.di-support-aero .di-support-header a.di-support-home{position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:8px;box-sizing:border-box;min-height:48px;padding:0 19px;color:#e9f5ff;border:1px solid rgba(82,184,220,.58);border-radius:2px;background:linear-gradient(125deg,rgba(15,49,73,.96),rgba(3,23,43,.96));font:600 16px/1.15 "DI Rajdhani","Arial Narrow",system-ui,sans-serif;text-transform:uppercase;letter-spacing:1.05px;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);text-decoration:none}
+body.di-support-aero .di-support-header a.di-support-home:after{content:"";position:absolute;inset:4px;pointer-events:none;background:linear-gradient(#72daef,#72daef) left top/8px 1px no-repeat,linear-gradient(#72daef,#72daef) left top/1px 5px no-repeat,linear-gradient(#72daef,#72daef) right bottom/8px 1px no-repeat,linear-gradient(#72daef,#72daef) right bottom/1px 5px no-repeat;opacity:.72}
+body.di-support-aero .di-support-home svg{width:17px;height:17px;color:#91d8ed;flex:none}
+body.di-support-aero .di-support-header a.di-support-home:hover{background:linear-gradient(130deg,#145575,#10344f);border-color:#a0edfa}
+body.di-support-aero .di-support-header a.di-support-home:focus-visible{outline:none;box-shadow:inset 0 0 0 2px #96eaff;border-color:#e4fbff}
+@media(max-width:700px){body.di-support-aero .di-support-header a.di-support-home{min-height:44px;padding:0 12px;font-size:14px;letter-spacing:.65px}}
+</style></body></html>
