@@ -1047,11 +1047,11 @@ body:has(#comments-page:not([hidden])) #comments-page #cm-items{
 <script id="di-download-runtime">
 (()=>{
  'use strict';
- const API='https://api.github.com/repos/dura1472p-cpu/Drone-Italia/releases?per_page=100';
+ const API='https://api.github.com/repos/dura1472p-cpu/Drone-Italia-download/releases?per_page=100';
  const latest=document.getElementById('latest'),previous=document.getElementById('previous'),status=document.getElementById('download-status');
  const date=new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric',timeZone:'Europe/Rome'});
  function el(tag,text,className){const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(className)x.className=className;return x;}
- function safeUrl(value,asset=false){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname==='github.com'&&u.pathname.startsWith(asset?'/dura1472p-cpu/Drone-Italia/releases/download/':'/dura1472p-cpu/Drone-Italia/releases/')?u.href:null;}catch(_){return null;}}
+ function safeUrl(value,asset=false){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname==='github.com'&&u.pathname.startsWith(asset?'/dura1472p-cpu/Drone-Italia-download/releases/download/':'/dura1472p-cpu/Drone-Italia-download/releases/')?u.href:null;}catch(_){return null;}}
  function bytes(n){if(!Number.isFinite(n)||n<0)return '';return n>=1048576?(n/1048576).toLocaleString('it-IT',{maximumFractionDigits:1})+' MB':Math.ceil(n/1024).toLocaleString('it-IT')+' KB';}
  function releaseCard(r,isLatest){
   const card=isLatest?latest:el('article',undefined,'release');card.replaceChildren();
@@ -1075,7 +1075,7 @@ body:has(#comments-page:not([hidden])) #comments-page #cm-items{
    releaseCard(releases[0],true);for(const r of releases.slice(1))previous.append(releaseCard(r,false));
    if(releases.length===1)previous.append(el('p','Non ci sono altre versioni APK pubblicate.','empty'));
    status.textContent='Versioni e file aggiornati dalle distribuzioni ufficiali di Drone Italia.';
-  }catch(_){latest.replaceChildren(el('h2','Elenco download temporaneamente non disponibile'),el('p','Riprova tra poco oppure consulta le distribuzioni ufficiali.','empty'));latest.querySelector('h2').id='latest-title';const link=el('a','Apri i download su GitHub','release-link');link.href='https://github.com/dura1472p-cpu/Drone-Italia/releases';latest.append(link);previous.replaceChildren(el('p','Archivio momentaneamente non disponibile.','empty'));status.textContent='Non è stato possibile aggiornare l’elenco.';}
+  }catch(_){latest.replaceChildren(el('h2','Elenco download temporaneamente non disponibile'),el('p','Riprova tra poco oppure consulta le distribuzioni ufficiali.','empty'));latest.querySelector('h2').id='latest-title';const link=el('a','Apri i download su GitHub','release-link');link.href='https://github.com/dura1472p-cpu/Drone-Italia-download/releases';latest.append(link);previous.replaceChildren(el('p','Archivio momentaneamente non disponibile.','empty'));status.textContent='Non è stato possibile aggiornare l’elenco.';}
  }
  window.diDownloadsLoad=load;
 })();
