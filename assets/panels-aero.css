@@ -1,0 +1,75 @@
+/* Riquadri Download e Community: stesso linguaggio del menu aeronautico. */
+body #download-page,
+body #comments-page.comments-page:not([hidden]){
+ position:relative!important;isolation:isolate;
+ border:1px solid rgba(99,183,211,.6)!important;border-radius:3px!important;
+ background:linear-gradient(135deg,rgba(10,38,59,.94),rgba(3,23,42,.96))!important;
+ box-shadow:inset 0 1px 0 #8ee3f022,0 14px 35px #00102033!important;
+ color:#dcecf7!important;
+}
+body #download-page::before,body #comments-page.comments-page::before{
+ content:"";position:absolute;inset:6px;pointer-events:none;opacity:.75;
+ background:linear-gradient(#72daef,#72daef) left top/15px 1px no-repeat,
+ linear-gradient(#72daef,#72daef) left top/1px 10px no-repeat,
+ linear-gradient(#72daef,#72daef) right bottom/15px 1px no-repeat,
+ linear-gradient(#72daef,#72daef) right bottom/1px 10px no-repeat;
+}
+body #download-page h1,body #comments-page #comments-title{
+ font-family:"DI Rajdhani","Arial Narrow",system-ui,sans-serif!important;font-weight:600!important;
+ font-size:clamp(27px,3vw,36px)!important;line-height:1.2!important;letter-spacing:1px!important;
+ text-transform:uppercase!important;color:#e1f6ff!important;
+}
+body #download-page h2,body #download-page h3,body #comments-page .cm-list h3{
+ font-family:"DI Rajdhani","Arial Narrow",system-ui,sans-serif!important;font-weight:600!important;
+ font-size:24px!important;line-height:1.3!important;letter-spacing:.7px!important;
+ text-transform:uppercase!important;color:#d9f2ff!important;
+}
+body #download-page p,body #comments-page.comments-page>p{color:#bdd5e6!important}
+body #download-page .eyebrow{
+ font-family:"DI Rajdhani",system-ui,sans-serif!important;font-size:15px!important;font-weight:600!important;
+ letter-spacing:1.6px!important;color:#8fd7ed!important;
+}
+body #download-page .latest,body #download-page .release{
+ position:relative;border:1px solid #4b99b6!important;border-radius:3px!important;
+ background:linear-gradient(130deg,#10344ce6,#071e34ed)!important;
+ box-shadow:inset 0 1px 0 #95e5f018!important;
+}
+body #download-page .badge{
+ font:600 14px/1.3 "DI Rajdhani",system-ui,sans-serif!important;letter-spacing:.8px!important;text-transform:uppercase!important;
+ border-radius:2px!important;border:1px solid #62c3db!important;background:#10445a!important;
+ color:#c2f2ff!important;padding:5px 11px!important;
+}
+body #download-page .version{font:600 18px/1.3 "DI Rajdhani",system-ui,sans-serif!important;letter-spacing:.6px!important;color:#94dff2!important}
+body #download-page .file,body #download-page .install{border-color:#4b91ac70!important}
+body #download-page .download{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ position:relative;min-height:44px!important;padding:11px 18px!important;
+ border:1px solid #7ccee3!important;border-radius:2px!important;
+ clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px);
+ background:linear-gradient(135deg,#117b9e,#125270)!important;
+ font:600 17px/1.25 "DI Rajdhani",system-ui,sans-serif!important;letter-spacing:.9px!important;
+ text-transform:uppercase!important;text-decoration:none!important;color:#f3fcff!important;box-shadow:inset 0 -1px 0 #91e4f388!important;
+}
+body #download-page .download:hover{border-color:#b3f1ff!important;background:linear-gradient(135deg,#188bad,#16647e)!important}
+body #download-page .download:focus-visible{outline:none!important;border-color:white!important;box-shadow:inset 0 0 0 2px #b7efff!important}
+body #download-page summary{
+ font:600 17px/1.4 "DI Rajdhani",system-ui,sans-serif!important;text-transform:uppercase!important;letter-spacing:.7px!important;color:#9fe2f4!important;
+}
+body #download-page .release-link{color:#99ddee!important;text-underline-offset:4px}
+body #download-page .release-notes{color:#c4dae9!important;font-family:system-ui,sans-serif!important;line-height:1.7!important}
+body #comments-page #cm-items article{
+ border-radius:2px!important;border:1px solid #468da878!important;
+ background:linear-gradient(130deg,#10334ae6,#071e34eb)!important;box-shadow:inset 0 1px 0 #a0e6ef12!important;
+}
+body #comments-page #cm-items time{color:#94bbd0!important}
+body #comments-page #cm-more{
+ min-height:44px!important;border-radius:2px!important;border:1px solid #6ac5df!important;
+ background:linear-gradient(135deg,#117b9e,#125270)!important;
+ font:600 16px/1.3 "DI Rajdhani",system-ui,sans-serif!important;letter-spacing:.8px!important;text-transform:uppercase!important;color:white!important;
+}
+@media(max-width:600px){
+ body #download-page h1,body #comments-page #comments-title{font-size:27px!important;letter-spacing:.7px!important}
+ body #download-page h2,body #download-page h3,body #comments-page .cm-list h3{font-size:22px!important}
+ body #download-page .latest,body #download-page .release{padding:17px!important}
+ body #download-page .download{font-size:16px!important;white-space:normal!important}
+}
