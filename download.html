@@ -28,6 +28,11 @@ footer{position:fixed;bottom:0;left:0;right:0;max-width:none;padding:8px 12px;te
  function el(tag,text,className){const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(className)x.className=className;return x;}
  function safeUrl(value,asset=false){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname==='github.com'&&u.pathname.startsWith(asset?'/dura1472p-cpu/Drone-Italia-download/releases/download/':'/dura1472p-cpu/Drone-Italia-download/releases/')?u.href:null;}catch(_){return null;}}
  function bytes(n){if(!Number.isFinite(n)||n<0)return '';return n>=1048576?(n/1048576).toLocaleString('it-IT',{maximumFractionDigits:1})+' MB':Math.ceil(n/1024).toLocaleString('it-IT')+' KB';}
+ function downloadIcon(){
+ const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+ for(const [k,v] of Object.entries({viewBox:'0 0 24 24',fill:'none',stroke:'currentColor','stroke-width':'2','stroke-linecap':'round','stroke-linejoin':'round','aria-hidden':'true'}))svg.setAttribute(k,v);
+ const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5');svg.append(path);return svg;
+ }
  function releaseMeta(r,a){
   const line=el('div',undefined,'di-release-meta'),build=String(a.name).match(/build[-_ ]?(\d+)/i);
   line.append(el('span',r.tag_name||r.name||''));
@@ -43,7 +48,7 @@ footer{position:fixed;bottom:0;left:0;right:0;max-width:none;padding:8px 12px;te
   title.append(heading,el('span','Ultima','badge'));latest.append(title);
   for(const a of r.files){
    latest.append(releaseMeta(r,a));
-   const link=el('a','↓ Scarica APK','download');link.href=safeUrl(a.browser_download_url,true);link.setAttribute('aria-label','Scarica '+a.name);latest.append(link);
+   const link=el('a','Scarica APK','download');link.prepend(downloadIcon());link.href=safeUrl(a.browser_download_url,true);link.setAttribute('aria-label','Scarica '+a.name);latest.append(link);
   }
   if(r.body&&typeof r.body==='string'){const details=el('details');details.append(el('summary','Novità di questa versione'),el('p',r.body,'release-notes'));latest.append(details);}
   return latest;
@@ -164,4 +169,10 @@ html body #latest.di-latest-compact .di-release-meta{font-size:clamp(10px,3.25vw
 html body #previous .di-release-meta{font-size:clamp(10px,3.15vw,15px)!important;gap:3px!important}
 html body :is(#download-page,.download-page) #history-title{font-size:19px!important;gap:10px!important}
 }
+</style><style id="di-download-preview-icons">
+html body #latest.di-latest-compact summary,html body :is(#download-page,.download-page) .di-install-details summary{display:flex!important;align-items:center!important;justify-content:space-between!important;list-style:none!important}
+html body #latest.di-latest-compact summary::-webkit-details-marker,html body .di-install-details summary::-webkit-details-marker{display:none!important}
+html body #latest.di-latest-compact summary:after,html body .di-install-details summary:after{content:"";width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin:0 4px 5px 16px;flex-shrink:0}
+html body #latest.di-latest-compact details[open] summary:after,html body .di-install-details[open] summary:after{transform:rotate(225deg);margin-bottom:0}
+html body #latest.di-latest-compact a.download svg{width:25px;height:25px;margin-right:10px}
 </style></body></html>
