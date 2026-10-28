@@ -162,3 +162,12 @@
 /* Le sezioni sono centrate come il menu principale; griglia mobile preservata. */
 #app-dropdown-panel{justify-content:center!important;text-align:center!important;justify-items:center!important}
 @media(min-width:1101px){#app-dropdown-panel{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:8px!important}#app-dropdown-panel[hidden]{display:none!important}}
+
+/* Su desktop il bordo abbraccia il gruppo di voci, senza spazio laterale vuoto. */
+@media(min-width:1101px){
+ body #app-dropdown-panel{
+  width:max-content!important;max-width:100%!important;box-sizing:border-box!important;
+  padding:10px!important;margin-left:auto!important;margin-right:auto!important;
+  justify-content:center!important;
+ }
+}
