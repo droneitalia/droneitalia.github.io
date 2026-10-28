@@ -1,0 +1,63 @@
+/* Testi di presentazione centrati; controlli e contenuti lunghi conservano la propria struttura. */
+body.di-centered-copy .section>.copy,
+body.di-centered-copy .section .copy #heading,
+body.di-centered-copy .section .copy #description,
+body.di-centered-copy .section .copy #note{
+ text-align:center!important;
+}
+body.di-centered-copy .section .copy #heading,
+body.di-centered-copy .section .copy #description,
+body.di-centered-copy .section .copy #note{margin-left:auto!important;margin-right:auto!important}
+body.di-centered-copy #download-page h1,
+body.di-centered-copy #download-page h2,
+body.di-centered-copy #download-page h3,
+body.di-centered-copy #download-page p:not(.release-notes),
+body.di-centered-copy #comments-page>p,
+body.di-centered-copy #comments-page .cm-list>h3,
+body.di-centered-copy #comments-page .cm-list>p{
+ text-align:center!important;
+}
+body.di-centered-copy #download-page .intro,
+body.di-centered-copy #download-page .install p{margin-left:auto!important;margin-right:auto!important}
+body.di-centered-copy #download-page .release-title{justify-content:center!important;flex-direction:column!important;align-items:center!important;gap:6px!important}
+body.di-centered-copy #download-page .latest>.badge{display:table!important;margin-left:auto!important;margin-right:auto!important}
+body.di-centered-copy #download-page summary,
+body.di-centered-copy #download-page .release-link{text-align:center!important}
+body.di-centered-copy #download-page .release-link{display:block!important}
+body.di-centered-copy #comments-page .di-community-header{
+ display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
+ align-items:center!important;gap:14px!important;
+}
+body.di-centered-copy #comments-page .di-community-header #comments-title{
+ grid-column:2!important;grid-row:1!important;text-align:center!important;margin:0!important;
+}
+body.di-centered-copy #comments-page .di-community-header #di-compose-outside{
+ grid-column:3!important;grid-row:1!important;justify-self:end!important;align-self:center!important;
+}
+body.di-centered-copy #support-page-title,
+body.di-centered-copy #support-content .di-support-intro,
+body.di-centered-copy #support-content .di-support-panel h3,
+body.di-centered-copy #support-content .di-support-panel>p,
+body.di-centered-copy #support-content .di-support-free{text-align:center!important}
+/* Pagina Download indipendente, raggiungibile anche tramite collegamento diretto. */
+body.di-centered-download main>h1,
+body.di-centered-download main>.eyebrow,
+body.di-centered-download main>.intro,
+body.di-centered-download .latest>h2,
+body.di-centered-download .history>h2,
+body.di-centered-download .history>p,
+body.di-centered-download .install>h2,
+body.di-centered-download .install>p,
+body.di-centered-download .meta,
+body.di-centered-download .empty,
+body.di-centered-download .status{text-align:center!important}
+body.di-centered-download .intro,body.di-centered-download .install p{margin-left:auto!important;margin-right:auto!important}
+body.di-centered-download .release-title{justify-content:center!important;align-items:center!important;flex-direction:column!important;gap:6px!important;text-align:center!important}
+body.di-centered-download .latest>.badge{display:table!important;margin-left:auto!important;margin-right:auto!important}
+@media(max-width:1050px){
+ body.di-centered-copy #comments-page .di-community-header{
+  display:flex!important;flex-direction:column!important;align-items:center!important;gap:13px!important;
+ }
+ body.di-centered-copy #comments-page .di-community-header #comments-title{flex:0 0 auto!important;width:100%!important}
+ body.di-centered-copy #comments-page .di-community-header #di-compose-outside{align-self:center!important;justify-content:center!important}
+}
