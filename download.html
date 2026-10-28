@@ -10,13 +10,13 @@ footer{position:fixed;bottom:0;left:0;right:0;max-width:none;padding:8px 12px;te
 <style>[data-admin-entry][hidden]{display:none!important}</style></head>
 <body class="di-centered-copy di-centered-download">
 <header><a class="brand" href="./#progetto">DRONE ITALIA</a><nav aria-label="Navigazione"><a href="./#progetto">Home</a><a href="./#commenti">Community</a></nav></header>
-<main>
+<main class="download-page">
 <p class="eyebrow">Drone Italia per Android</p><h1>Pronto per il prossimo volo?</h1>
 <p class="intro">APK per Android</p>
 <section class="latest" id="latest" aria-labelledby="latest-title"><p class="badge">Ultima versione</p><h2 id="latest-title">Controllo dei download disponibili…</h2><p class="empty">Attendi qualche istante.</p></section>
 <p class="status" id="download-status" role="status" aria-live="polite"></p>
 <section class="history" aria-labelledby="history-title"><h2 id="history-title">Versioni precedenti</h2><h3 class="di-archive-name">Drone Italia</h3><div id="previous"><p class="empty">Caricamento dell’archivio…</p></div></section>
-<section class="install" aria-labelledby="install-title"><h2 id="install-title">Come installare l’APK</h2><details class="di-install-details"><summary>Istruzioni di installazione</summary><p>Scarica il file sul telefono Android e aprilo dalla cartella <strong>Download</strong>. Segui le indicazioni di Android; se richiesto, autorizza l’installazione per l’app con cui hai aperto il file. Per aggiornare un’installazione esistente, apri il nuovo APK e scegli <strong>Aggiorna</strong>.</p></details></section>
+<section class="install" aria-labelledby="install-title"><h2 id="install-title">Come installare l’APK</h2><details class="di-install-details"><summary>Come installare l’APK</summary><p>Scarica il file sul telefono Android e aprilo dalla cartella <strong>Download</strong>. Segui le indicazioni di Android; se richiesto, autorizza l’installazione per l’app con cui hai aperto il file. Per aggiornare un’installazione esistente, apri il nuovo APK e scegli <strong>Aggiorna</strong>.</p></details></section>
 <noscript><p>Per consultare l’elenco aggiornato dei file abilita JavaScript oppure <a href="https://github.com/dura1472p-cpu/Drone-Italia-download/releases" target="_blank" rel="noopener noreferrer">apri le distribuzioni su GitHub</a>.</p></noscript>
 </main><footer aria-label="Informazioni sul sito">Drone Italia · Community<span data-admin-entry hidden> · <a href="admin.html" style="color:inherit">Area amministratore</a></span></footer>
 <script>
@@ -127,5 +127,41 @@ footer{position:fixed;bottom:0;left:0;right:0;max-width:none;padding:8px 12px;te
 #previous .di-release-meta{font-size:clamp(10px,3vw,14px);gap:2px}
 #previous .di-archive-row{gap:3px!important}
 #previous a.di-archive-download{flex-basis:32px;width:32px}
+}
+</style><style id="di-approved-download-layout">
+/* Scoped last overrides match the approved compact download design. */
+html body :is(#download-page,.download-page){padding:22px!important}
+html body :is(#download-page,.download-page)>h1{font-size:32px!important;line-height:1.15!important;margin:0 0 10px!important}
+html body :is(#download-page,.download-page)>.eyebrow{display:none!important}
+html body :is(#download-page,.download-page)>.intro{margin:0 0 20px!important;font-size:18px!important}
+html body #latest.di-latest-compact{max-width:700px!important;margin:0 auto 24px!important;padding:22px!important;border:1px solid #21c5e5!important;border-radius:9px!important;background:rgba(0,22,37,.6)!important;box-shadow:none!important}
+html body #latest.di-latest-compact .di-latest-title{justify-content:flex-start!important;gap:14px!important;margin-bottom:10px!important}
+html body #latest.di-latest-compact .di-latest-title h2{font-family:system-ui,sans-serif!important;font-size:28px!important;font-weight:700!important;letter-spacing:0!important;text-transform:none!important;text-align:left!important;margin:0!important}
+html body #latest.di-latest-compact .badge{color:#002635!important;background:#3cdaef!important;border:0!important;border-radius:4px!important;line-height:1.4!important;letter-spacing:.04em!important;font-weight:700!important}
+html body #latest.di-latest-compact .di-release-meta{font-size:16px!important;text-align:left!important;justify-content:flex-start!important;gap:4px!important}
+html body #latest.di-latest-compact a.download{width:100%!important;max-width:none!important;min-height:50px!important;border:1px solid #44e6f4!important;border-radius:7px!important;clip-path:none!important;background:linear-gradient(110deg,#31c7ec,#3bd5ed)!important;color:#002536!important;font-family:system-ui,sans-serif!important;font-size:21px!important;font-weight:700!important;letter-spacing:0!important;text-transform:none!important;margin:18px 0 16px!important;box-shadow:none!important}
+html body #latest.di-latest-compact details{padding-top:14px!important;margin:0!important;border-top:1px solid #28768a!important;text-align:left!important}
+html body #latest.di-latest-compact summary{font-family:system-ui,sans-serif!important;text-align:left!important;text-transform:none!important;letter-spacing:0!important;font-size:17px!important;color:#d2e8f3!important}
+html body :is(#download-page,.download-page) .history{max-width:700px!important;margin:0 auto!important;padding:0!important}
+html body :is(#download-page,.download-page) #history-title{display:flex!important;align-items:center!important;gap:16px!important;font-size:21px!important;text-align:left!important;margin:0 0 16px!important;letter-spacing:.06em!important}
+html body :is(#download-page,.download-page) #history-title:after{content:"";height:1px;background:#2dc6df;flex:1}
+html body :is(#download-page,.download-page) .di-archive-name{font-family:system-ui,sans-serif!important;text-transform:none!important;letter-spacing:0!important;font-size:20px!important;text-align:left!important;margin:0 0 8px!important;padding:0!important}
+html body #previous{border-top:1px solid #29768a!important}
+html body #previous .di-archive-row{min-height:44px!important;padding:8px 0!important;border-bottom:1px solid #29768a!important}
+html body #previous .di-release-meta{font-family:system-ui,sans-serif!important;font-size:15px!important;line-height:1.5!important;gap:4px!important}
+html body #previous .di-release-meta>span:first-child{font-weight:600!important;color:#e1eff7}
+html body #previous a.di-archive-download{color:#38d9ed!important}
+html body :is(#download-page,.download-page) .install{max-width:700px!important;margin:22px auto 0!important;padding:0!important;border:0!important}
+html body :is(#download-page,.download-page) #install-title{display:none!important}
+html body :is(#download-page,.download-page) .di-install-details{padding:14px 16px!important;border:1px solid #26718a!important;border-radius:8px!important;background:rgba(0,22,37,.5)}
+html body :is(#download-page,.download-page) .di-install-details summary{font-family:system-ui,sans-serif!important;font-size:17px!important;text-transform:none!important;letter-spacing:0!important;text-align:left!important;color:#d5e9f4}
+@media(max-width:600px){
+html body :is(#download-page,.download-page){padding:18px 14px!important}
+html body :is(#download-page,.download-page)>h1{font-size:28px!important}
+html body #latest.di-latest-compact{padding:16px!important}
+html body #latest.di-latest-compact .di-latest-title h2{font-size:25px!important}
+html body #latest.di-latest-compact .di-release-meta{font-size:clamp(10px,3.25vw,15px)!important;gap:3px!important}
+html body #previous .di-release-meta{font-size:clamp(10px,3.15vw,15px)!important;gap:3px!important}
+html body :is(#download-page,.download-page) #history-title{font-size:19px!important;gap:10px!important}
 }
 </style></body></html>
