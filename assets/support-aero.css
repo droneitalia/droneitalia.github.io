@@ -1,0 +1,71 @@
+@font-face{font-family:"DI Rajdhani";src:url("fonts/Rajdhani-SemiBold.ttf") format("truetype");font-style:normal;font-weight:600;font-display:swap}
+body.di-support-aero{
+ color:#e6f3fb;color-scheme:dark;
+ background:linear-gradient(#5bbad006 1px,transparent 1px),linear-gradient(90deg,#5bbad006 1px,transparent 1px),radial-gradient(ellipse at 50% 0,#123e5c 0,#061a2e 56%,#041322 100%);
+ background-size:48px 48px,48px 48px,100% 100%;background-attachment:fixed;
+}
+body.di-support-aero .di-support-header{max-width:1100px;border-color:#67bfd02e;padding:22px 24px}
+body.di-support-aero .di-support-brand{font:600 20px/1.2 "DI Rajdhani",system-ui,sans-serif;letter-spacing:2px;color:#d5f4ff}
+body.di-support-aero .di-support-header nav{gap:8px}
+body.di-support-aero .di-support-header nav a{
+ position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 15px;
+ background:linear-gradient(130deg,#10334bed,#061e34ed);border:1px solid #56b5d16b;border-radius:2px;
+ clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+ font:600 15px/1.2 "DI Rajdhani",system-ui,sans-serif;letter-spacing:.9px;text-transform:uppercase;color:#d9f2ff;text-decoration:none;
+}
+body.di-support-aero .di-support-header nav a[aria-current],body.di-support-aero .di-support-header nav a:hover{background:linear-gradient(130deg,#116b8d,#123e5c);border-color:#85dff1;color:white;box-shadow:inset 0 -2px 0 #65d8f2;text-decoration:none}
+body.di-support-aero #support-content{max-width:700px;margin:38px auto 48px;padding:0 22px}
+body.di-support-aero #support-page-title{font:600 clamp(30px,5vw,42px)/1.15 "DI Rajdhani",system-ui,sans-serif;letter-spacing:1.7px;text-transform:uppercase;color:#e8f8ff;margin:0 0 22px}
+body.di-support-aero #di-donate-modal .di-donate-card{
+ position:relative;background:linear-gradient(135deg,#0d2c44f5,#061d32fa)!important;color:#dcecf7!important;
+ border:1px solid #64b5cf80!important;border-radius:3px!important;box-shadow:0 14px 40px #0005,inset 0 1px 0 #8ee3f022!important;
+ padding:28px!important;color-scheme:dark!important;
+}
+body.di-support-aero .di-donate-card::before{
+ content:"";position:absolute;inset:6px;pointer-events:none;opacity:.8;
+ background:linear-gradient(#72daef,#72daef) left top/14px 1px no-repeat,linear-gradient(#72daef,#72daef) left top/1px 10px no-repeat,
+ linear-gradient(#72daef,#72daef) right bottom/14px 1px no-repeat,linear-gradient(#72daef,#72daef) right bottom/1px 10px no-repeat;
+}
+body.di-support-aero .di-donate-card .di-support-intro{color:#a9c9db!important;font-size:14px;line-height:1.6;margin:0 0 20px}
+body.di-support-aero .di-support-tabs{gap:10px;margin:18px 0 20px}
+body.di-support-aero .di-support-tabs button{
+ padding:14px 10px!important;border:1px solid #468caa!important;border-radius:2px!important;
+ clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px);
+ background:linear-gradient(135deg,#11354f,#071e33)!important;color:#dceefa!important;
+ font:600 16px/1.25 "DI Rajdhani",system-ui,sans-serif!important;letter-spacing:.8px;text-transform:uppercase;box-shadow:none!important;
+}
+body.di-support-aero .di-support-tabs button[aria-selected=true]{border-color:#8ee5f3!important;background:linear-gradient(130deg,#12698a,#133e59)!important;box-shadow:inset 0 -2px 0 #69d9ee!important;color:#fff!important}
+body.di-support-aero .di-support-tabs span{font-size:24px;line-height:1.2;margin-bottom:7px}
+body.di-support-aero .di-support-panel{background:#071c30c9!important;border:1px solid #397795a6!important;border-radius:2px!important;padding:20px!important}
+body.di-support-aero .di-support-panel h3{font:600 23px/1.25 "DI Rajdhani",system-ui,sans-serif!important;letter-spacing:.8px;text-transform:uppercase;color:#d6f3ff!important;margin:0 0 10px}
+body.di-support-aero .di-support-panel p{color:#b8d1e2;line-height:1.65;font-size:14px}
+body.di-support-aero .di-donate-card label:not(.di-monthly-consent){font:600 16px/1.3 "DI Rajdhani",system-ui,sans-serif!important;letter-spacing:.65px;text-transform:uppercase;color:#d6edfa!important;margin:20px 0 10px}
+body.di-support-aero .di-donate-card select{background:#0c2a41!important;color:#f2faff!important;border:1px solid #5298b5!important;border-radius:2px!important;min-height:46px!important;font:600 19px/1.3 "DI Rajdhani",system-ui,sans-serif!important;padding:11px 12px!important;width:100%}
+body.di-support-aero .di-donate-card select option{background:#0c2a41;color:#f2faff}
+body.di-support-aero .di-donate-card button.di-donate-pay,body.di-support-aero .di-donate-card button.di-donate-secondary{
+ min-height:46px;padding:12px 16px!important;border:1px solid #65c1dd!important;border-radius:2px!important;
+ clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px);
+ background:linear-gradient(130deg,#10789e,#115270)!important;color:#f4fcff!important;
+ font:600 17px/1.25 "DI Rajdhani",system-ui,sans-serif!important;letter-spacing:1px;text-transform:uppercase;
+}
+body.di-support-aero .di-donate-card button.di-donate-secondary{background:linear-gradient(130deg,#133b55,#0c263c)!important;border-color:#4b92ae!important}
+body.di-support-aero .di-donate-card button.di-donate-pay:hover,body.di-support-aero .di-support-tabs button:hover{border-color:#b7f2ff!important;filter:brightness(1.1)}
+body.di-support-aero .di-donate-card button:disabled{opacity:.55!important;filter:none!important;cursor:not-allowed!important}
+body.di-support-aero #di-donate-status,body.di-support-aero #di-monthly-status{color:#b8e9f6!important;line-height:1.65}
+body.di-support-aero .di-donate-card small,body.di-support-aero .di-donate-card .di-support-free{color:#a4c4d8!important;font-size:12px;line-height:1.65}
+body.di-support-aero .di-monthly-consent{color:#d4e6f3!important;font:400 14px/1.6 system-ui,sans-serif!important;text-transform:none!important;letter-spacing:0!important}
+body.di-support-aero .di-monthly-consent input{accent-color:#29b8dc}
+body.di-support-aero .di-monthly-manage{color:#88dcee!important;text-underline-offset:4px}
+body.di-support-aero #support-content :focus-visible{outline:2px solid #bbf2ff!important;outline-offset:3px!important}
+body.di-support-aero .di-support-tabs button:focus-visible,body.di-support-aero .di-donate-card button.di-donate-pay:focus-visible,body.di-support-aero .di-donate-card button.di-donate-secondary:focus-visible{outline:none!important;box-shadow:inset 0 0 0 2px #bcf5ff!important}
+body.di-support-aero footer{border-color:#54a6c02e;color:#8eafc8}
+@media(max-width:600px){
+ body.di-support-aero .di-support-header{padding:18px;gap:14px}
+ body.di-support-aero .di-support-header nav{gap:6px}
+ body.di-support-aero .di-support-header nav a{padding:8px 10px;font-size:14px;letter-spacing:.5px}
+ body.di-support-aero #support-content{padding:0 14px;margin-top:28px}
+ body.di-support-aero #di-donate-modal .di-donate-card{padding:22px 16px!important}
+ body.di-support-aero .di-support-panel{padding:16px!important}
+ body.di-support-aero .di-support-tabs{gap:8px}
+ body.di-support-aero .di-support-tabs button{font-size:15px!important;letter-spacing:.5px;padding:13px 7px!important}
+}
