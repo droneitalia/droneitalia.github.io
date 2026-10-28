@@ -75,3 +75,5 @@ body.di-support-aero #di-donate-custom:focus-visible{outline:2px solid #94e5f5;o
 body.di-support-aero #di-donate-custom[aria-invalid="true"]{border-color:#ff9d93}
 body.di-support-aero #di-donate-custom-error{color:#ffb8af}
 body.di-support-aero #di-donate-custom-hint{color:#b4d4e2;margin-top:7px}
+
+body.di-support-aero #support-content #di-donate-modal #di-donate-custom{background:#08283d!important;color:#e3f5fc!important;border:1px solid #397e9b!important;border-radius:3px!important;padding:13px!important;font:18px/1.4 system-ui,sans-serif!important}
