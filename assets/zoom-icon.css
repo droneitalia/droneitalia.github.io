@@ -1,17 +1,5 @@
-/* Lente SVG nitida al posto del cursore zoom e dell’emoji. */
+/* Cursore lente vettoriale: segue il mouse sull’immagine. */
 body #phone{cursor:default!important}
-body #phone:has(img),body #phone:has(img) img{cursor:pointer!important}
-body #phone:has(img)::before{
- content:"";position:absolute;top:13px;right:13px;width:36px;height:36px;box-sizing:border-box;
- border:1px solid #81d7eb;border-radius:5px;pointer-events:none;z-index:2;
- background-color:rgba(5,29,48,.94);background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23c5f3ff%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2210.5%22%20cy%3D%2210.5%22%20r%3D%226.5%22%2F%3E%3Cpath%20d%3D%22m16%2016%205%205M10.5%207.5v6M7.5%2010.5h6%22%2F%3E%3C%2Fsvg%3E");background-position:center;background-repeat:no-repeat;background-size:21px 21px;
- box-shadow:0 2px 9px #00102066;opacity:0;transform:translateY(-3px);transition:opacity .16s,transform .16s;
-}
-body #phone:has(img):hover::before,body #phone:has(img):focus-visible::before{opacity:1;transform:none}
+body #phone:has(img),body #phone:has(img) img{cursor:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%3E%3Cg%20stroke%3D%22white%22%20stroke-width%3D%224%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%228%22%2F%3E%3Cpath%20d%3D%22m18%2018%2010%2010M8%2012h8M12%208v8%22%2F%3E%3C%2Fg%3E%3Cg%20stroke%3D%22%2312374c%22%20stroke-width%3D%222%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%228%22%2F%3E%3Cpath%20d%3D%22m18%2018%2010%2010M8%2012h8M12%208v8%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") 12 12,zoom-in!important}
+body #phone::before{display:none!important}
 body #phone:not(:has(img))::after{display:none!important}
-body #caption::before{
- content:"";display:inline-block;width:17px;height:17px;margin-right:7px;vertical-align:-3px;
- background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23c5f3ff%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2210.5%22%20cy%3D%2210.5%22%20r%3D%226.5%22%2F%3E%3Cpath%20d%3D%22m16%2016%205%205M10.5%207.5v6M7.5%2010.5h6%22%2F%3E%3C%2Fsvg%3E");background-position:center;background-repeat:no-repeat;background-size:contain;
-}
-@media(hover:none){body #phone:has(img)::before{opacity:1;transform:none}}
-@media(prefers-reduced-motion:reduce){body #phone::before{transition:none!important}}
