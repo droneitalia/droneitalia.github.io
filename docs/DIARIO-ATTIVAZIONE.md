@@ -61,3 +61,13 @@ Il pannello Diario verifica la stessa chiave amministrativa tramite l’endpoint
 node --test tests/journal.test.mjs
 ```
 Richiede Node con `node:sqlite` (eseguito con Node 24). I file preview.html, index.html locale di anteprima, build.py e le copie media non vanno pubblicati al posto della home: per index.html usare soltanto la modifica allo script di ritorno sulla sorgente corrente.
+
+## Aggiornamento dopo la lettura del Worker Commenti reale
+
+Il file fornito dall’utente il 29/10/2026 conferma `GAS_WEB_APP_URL` + `DRONE_ITALIA_SECRET`: il servizio email attuale è un gateway Google Apps Script, non Brevo/Resend. Le configurazioni di questi ultimi nel nuovo Worker sono alternative non attivate; prima della distribuzione occorre integrare il gateway esistente, dopo avere esaminato il suo Code.gs. Non creare un nuovo provider email.
+
+È stata preparata `integration/worker-commenti-diario.mjs`, ottenuta dalla sorgente allegata cambiando soltanto `/auth/me`: restituisce uno pseudonimo stabile ottenuto con HMAC separato per dominio e `canPost` calcolato sui ban account già esistenti. Nessuna nuova tabella o secret è richiesta per questa modifica. Il nuovo Worker Diario invia `Origin: https://droneitalia.github.io` quando consulta il servizio Commenti, come richiesto dal codice reale.
+
+I test sono ora 20: cinque usano il modulo Commenti aggiornato e verificano identità stabile tra sessioni, sessioni revocate, ban account, origine non consentita e collegamento autentico dei due moduli. Rimangono test locali, senza invii email reali. Eseguire `node --test tests/*.test.mjs`.
+
+Fonte quote Google: https://developers.google.com/apps-script/guides/services/quotas (100 destinatari al giorno per account consumer, 1.500 per Workspace, quote per utente condivise con gli altri invii). Verificare il tipo di account e il codice GAS prima di confermare la capacità effettiva. Nessun valore di GAS_WEB_APP_URL o DRONE_ITALIA_SECRET va copiato in file pubblici.
