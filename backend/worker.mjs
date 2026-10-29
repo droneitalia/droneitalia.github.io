@@ -1,0 +1,104 @@
+const ORIGIN='https://droneitalia.github.io';
+const COMMENTS='https://drone-italia-commenti.turni-vigilanza-pdura.workers.dev';
+const MAX_BYTES=153600,MAX_STORAGE=100*1024*1024,RIGHTS='2026-10-29-v1';
+const ID=/^[a-f0-9-]{36}$/i;
+class HttpError extends Error{constructor(status,message){super(message);this.status=status}}
+const fail=(s,m)=>{throw new HttpError(s,m)};
+const now=()=>new Date().toISOString();
+const json=(d,s=200)=>new Response(JSON.stringify(d),{status:s,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','Access-Control-Allow-Origin':ORIGIN,'Vary':'Origin','X-Content-Type-Options':'nosniff'}});
+async function remote(url,options={}){return fetch(url,{...options,signal:AbortSignal.timeout(12000),redirect:'error'})}
+function bearer(r){const token=r.headers.get('Authorization')?.match(/^Bearer ([a-f0-9]{64})$/i)?.[1];if(!token)fail(401,'Verifica la tua email per condividere un volo.');return token}
+async function hmac(value,secret){if(!secret||secret.length<32)fail(503,'Servizio non configurato.');const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);return [...new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(value)))].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function identity(request,env){
+ const token=bearer(request);let r,d;
+ try{r=await remote(COMMENTS+'/auth/me',{headers:{Authorization:'Bearer '+token,'Cache-Control':'no-store'}});d=await r.json()}catch{fail(503,'Verifica della sessione temporaneamente non disponibile.')}
+ if(r.status===401||r.status===403||d.authenticated!==true)fail(401,'Sessione scaduta. Verifica nuovamente la tua email.');
+ if(!r.ok)fail(503,'Servizio community non disponibile.');if(d.banned===true||d.canPost===false)fail(403,'Il tuo account non può inviare contenuti.');if(d.canPost!==true)fail(503,'Occorre completare i controlli di accesso community.');
+ // Stable pseudonymous identity, returned only by the existing authenticated service.
+ // Never derive ownership from a browser assertion, email field or a rotating session token.
+ const account=d.accountId??d.account_id??d.userId??d.email_hash??d.user?.id;
+ if(typeof account!=='string'||account.length<8||account.length>256)fail(503,'Occorre completare l’integrazione dell’accesso community.');
+ return {owner:await hmac(account,env.JOURNAL_OWNER_SECRET),token};
+}
+async function admin(request,env){const token=request.headers.get('Authorization')?.match(/^Bearer (.{20,512})$/)?.[1];if(!token)fail(401,'Accesso amministratore richiesto.');let r;try{r=await remote(COMMENTS+'/admin/comments',{headers:{Authorization:'Bearer '+token,'Cache-Control':'no-store'}})}catch{fail(503,'Verifica amministratore non disponibile.')};const ok=r.ok;await r.body?.cancel();if(!ok)fail(401,'Chiave amministrativa non valida.');return true}
+async function bounded(request,max){const len=Number(request.headers.get('Content-Length')||0);if(len>max)fail(413,'Invio troppo grande.');const reader=request.body?.getReader();if(!reader)return new Uint8Array();let size=0;const chunks=[];try{for(;;){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>max){await reader.cancel();fail(413,'Invio troppo grande.')}chunks.push(value)}}finally{reader.releaseLock()}const result=new Uint8Array(size);let offset=0;for(const part of chunks){result.set(part,offset);offset+=part.length}return result}
+async function body(request,max=20000){const len=Number(request.headers.get('Content-Length')||0);if(len>max)fail(413,'Invio troppo grande.');let text;try{text=new TextDecoder().decode(await bounded(request,max))}catch(e){if(e instanceof HttpError)throw e;fail(400,'Dati non leggibili.')}if(new TextEncoder().encode(text).length>max)fail(413,'Invio troppo grande.');try{return JSON.parse(text)}catch{fail(400,'Dati non validi.')}}
+const query=(env,sql,...values)=>env.DB.prepare(sql).bind(...values);
+async function rate(env,key,limit){const date=now().slice(0,10),bucket=date+':'+key;const r=await query(env,'INSERT INTO journal_rate(bucket,count,expires_at) VALUES(?,1,?) ON CONFLICT(bucket) DO UPDATE SET count=count+1 WHERE count<? RETURNING count',bucket,date+'T23:59:59.999Z',limit).first();if(!r)fail(429,'Limite giornaliero raggiunto. Riprova domani.');}
+function clean(value,min,max,label){if(typeof value!=='string')fail(400,label+' non valido.');const v=value.trim();if(v.length<min||v.length>max||/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(v))fail(400,label+' non valido.');return v}
+function number(v,max,label){if(v===null||v===undefined||v==='')return null;if(typeof v!=='number'||!Number.isFinite(v)||v<0||v>max)fail(400,label+' non valido.');return v}
+export function youtube(value){if(!value)return null;let u;try{u=new URL(value)}catch{fail(400,'Inserisci un collegamento YouTube valido.')};if(u.protocol!=='https:'||u.username||u.password||u.port)fail(400,'Collegamento video non valido.');let id;if(u.hostname==='youtu.be')id=u.pathname.slice(1);else if(['www.youtube.com','youtube.com','m.youtube.com'].includes(u.hostname)){if(u.pathname==='/watch')id=u.searchParams.get('v');else id=u.pathname.match(/^\/(?:shorts|embed)\/([^/]+)$/)?.[1]}if(!/^[A-Za-z0-9_-]{11}$/.test(id||''))fail(400,'Usa un video YouTube con collegamento valido.');return id}
+export function payload(d){
+ if(d.rightsConsent!==true||d.privacyConsent!==true||d.rightsVersion!==RIGHTS)fail(400,'Conferma i diritti dei contenuti e l’informativa sul trattamento.');
+ const day=clean(d.flightDate,10,10,'Data del volo');const parsed=new Date(day+'T00:00:00.000Z');if(!/^\d{4}-\d{2}-\d{2}$/.test(day)||!Number.isFinite(+parsed)||parsed.toISOString().slice(0,10)!==day||day>now().slice(0,10))fail(400,'Data del volo non valida.');
+ if(!Array.isArray(d.photos)||d.photos.length<1||d.photos.length>5||d.photos.some(x=>!ID.test(x))||new Set(d.photos).size!==d.photos.length)fail(400,'Inserisci da 1 a 5 foto diverse.');
+ if(d.avatar&&!ID.test(d.avatar))fail(400,'Immagine autore non valida.');
+ return {title:clean(d.title,3,100,'Titolo'),nickname:clean(d.nickname,2,40,'Nickname'),body:clean(d.body,20,4000,'Racconto'),flight_date:day,place:clean(d.place||'',0,80,'Zona'),drone:clean(d.drone||'',0,80,'Drone'),duration:number(d.duration,1440,'Durata'),distance:number(d.distance,10000,'Distanza'),height:number(d.height,10000,'Quota'),youtube_id:youtube(d.videoUrl),photos:d.photos,avatar:d.avatar||null};
+}
+async function moderate(env,input){
+ if(!env.OPENAI_API_KEY)return 'review';
+ try{const r=await remote('https://api.openai.com/v1/moderations',{method:'POST',headers:{Authorization:'Bearer '+env.OPENAI_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({model:'omni-moderation-latest',input})});if(!r.ok)return 'review';const d=await r.json();return Array.isArray(d.results)&&d.results.length>0&&d.results.every(x=>x.flagged===false&&x.categories&&Object.keys(x.categories).length>0)?'pass':'review'}catch{return 'review'}
+}
+function base64(bytes){let s='';for(let i=0;i<bytes.length;i+=8192)s+=String.fromCharCode(...bytes.subarray(i,i+8192));return btoa(s)}
+async function upload(request,env,owner){
+ await rate(env,'media:'+owner,30);if(request.headers.get('Content-Type')?.split(';')[0]!=='image/jpeg')fail(415,'Usa una foto JPEG compressa.');
+ if(request.headers.get('X-Rights-Consent')!==RIGHTS||request.headers.get('X-Privacy-Consent')!=='true')fail(400,'Conferma diritti e trattamento prima di caricare le immagini.');const data=await bounded(request,MAX_BYTES);if(data.length<100||data.length>MAX_BYTES)fail(413,'La foto deve essere inferiore a 150 KB.');if(data[0]!==255||data[1]!==216||data.at(-2)!==255||data.at(-1)!==217)fail(415,'Immagine JPEG non valida.');
+ const kind=new URL(request.url).searchParams.get('kind')==='avatar'?'avatar':'photo';const result=await moderate(env,[{type:'image_url',image_url:{url:'data:image/jpeg;base64,'+base64(data)}}]);
+ const id=crypto.randomUUID(),r=await query(env,'INSERT INTO journal_media(id,owner,kind,mime,bytes,size,moderation,created_at) SELECT ?,?,?,?,?,?,?,? WHERE (SELECT COALESCE(SUM(size),0) FROM journal_media)+?<=?',id,owner,kind,'image/jpeg',data.buffer,data.length,result,now(),data.length,MAX_STORAGE).run();
+ if(!r.meta?.changes)fail(507,'Archivio temporaneamente pieno. Nessun servizio a pagamento verrà attivato automaticamente.');return json({id,status:result==='pass'?'checked':'review'});
+}
+async function mediaRows(env,p,owner,currentId){const ids=[...p.photos,...(p.avatar?[p.avatar]:[])];const rows=[];for(const id of ids){const m=await query(env,'SELECT id,owner,flight_id,kind,moderation FROM journal_media WHERE id=?',id).first();if(!m||m.owner!==owner||(m.flight_id&&m.flight_id!==currentId))fail(403,'Una delle immagini non appartiene a questo invio.');if(m.kind!==(id===p.avatar?'avatar':'photo'))fail(400,'Tipo immagine non valido.');rows.push(m)}return rows}
+async function materialize(env,f,privateView=false){
+ const m=(await query(env,'SELECT id,kind,sort_order FROM journal_media WHERE flight_id=? ORDER BY sort_order,id',f.id).all()).results||[];
+ const out={id:f.id,title:f.title,author:f.nickname,story:f.body,date:f.flight_date,place:f.place,drone:f.drone,duration:f.duration,distance:f.distance,height:f.height,youtubeId:f.youtube_id,status:f.status,publishedAt:f.published_at,createdAt:f.created_at,updatedAt:f.updated_at,photos:m.filter(x=>x.kind==='photo').map(x=>x.id),avatar:m.find(x=>x.kind==='avatar')?.id||null,revision:f.revision};
+ if(privateView)out.reviewReason=f.review_reason;return out;
+}
+async function queue(env,id){await query(env,'INSERT OR IGNORE INTO journal_mail(id,flight_id) VALUES(?,?)',crypto.randomUUID(),id).run()}
+async function save(request,env,owner,id=null){
+ const d=await body(request),p=payload(d);let old=null;if(id){old=await query(env,'SELECT * FROM journal_flights WHERE id=? AND owner=?',id,owner).first();if(!old)fail(404,'Racconto non trovato.');if(old.status==='published'||old.status==='hidden')fail(409,'Per modificare un racconto pubblicato contatta l’amministratore.');if(d.revision!==old.revision)fail(409,'Il racconto è stato aggiornato. Ricarica prima di modificarlo.')}else{
+  if(!ID.test(d.requestId||''))fail(400,'Riferimento invio non valido.');const exists=await query(env,'SELECT * FROM journal_flights WHERE owner=? AND request_id=?',owner,d.requestId).first();if(exists)return json({ok:true,flight:await materialize(env,exists,true)});
+ }
+ await rate(env,'story:'+owner,5);const media=await mediaRows(env,p,owner,id);const textCheck=await moderate(env,[{type:'text',text:p.title+'\n'+p.nickname+'\n'+p.body+'\n'+p.place+'\n'+p.drone}]);
+ const reason=p.youtube_id?'Controllo del video da parte dell’amministratore.':textCheck!=='pass'||media.some(m=>m.moderation!=='pass')?'Contenuti da verificare da parte dell’amministratore.':'';
+ const state=reason?'pending':'published',stamp=now(),flightId=id||crypto.randomUUID(),mutation=crypto.randomUUID();const statements=[];
+ if(old){statements.push(query(env,'UPDATE journal_flights SET title=?,nickname=?,body=?,flight_date=?,place=?,drone=?,duration=?,distance=?,height=?,youtube_id=?,status=?,review_reason=?,rights_version=?,rights_at=?,updated_at=?,published_at=?,revision=revision+1,mutation=? WHERE id=? AND owner=? AND revision=?',p.title,p.nickname,p.body,p.flight_date,p.place,p.drone,p.duration,p.distance,p.height,p.youtube_id,state,reason,RIGHTS,stamp,stamp,state==='published'?stamp:null,mutation,flightId,owner,old.revision));statements.push(query(env,'UPDATE journal_media SET flight_id=NULL WHERE flight_id=? AND EXISTS(SELECT 1 FROM journal_flights WHERE id=? AND owner=? AND revision=? AND mutation=?)',flightId,flightId,owner,old.revision+1,mutation))}
+ else statements.push(query(env,'INSERT INTO journal_flights(id,owner,request_id,title,nickname,body,flight_date,place,drone,duration,distance,height,youtube_id,status,review_reason,rights_version,rights_at,created_at,updated_at,published_at,mutation) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',flightId,owner,d.requestId,p.title,p.nickname,p.body,p.flight_date,p.place,p.drone,p.duration,p.distance,p.height,p.youtube_id,state,reason,RIGHTS,stamp,stamp,stamp,state==='published'?stamp:null,mutation));
+ for(const [i,m]of media.entries())statements.push(query(env,'UPDATE journal_media SET flight_id=?,sort_order=? WHERE id=? AND owner=? AND EXISTS(SELECT 1 FROM journal_flights WHERE id=? AND owner=? AND revision=? AND mutation=?)',flightId,i,m.id,owner,flightId,owner,old?old.revision+1:1,mutation));
+ const batch=await env.DB.batch(statements);if(old&&!batch[0].meta?.changes)fail(409,'Il racconto è cambiato durante l’invio. Ricarica la pagina.');
+ if(state==='pending')await queue(env,flightId);return json({ok:true,flight:await materialize(env,await query(env,'SELECT * FROM journal_flights WHERE id=?',flightId).first(),true)},old?200:201);
+}
+async function notify(env){
+ if(!env.ADMIN_EMAIL||!env.EMAIL_FROM||!['brevo','resend'].includes(env.MAIL_PROVIDER)||!(env.MAIL_PROVIDER==='brevo'?env.BREVO_API_KEY:env.RESEND_API_KEY))return;
+ const count=await query(env,"SELECT count(*) AS n FROM journal_mail WHERE substr(last_attempt,1,10)=?",now().slice(0,10)).first();if(count.n>=10)return;
+ const rows=(await query(env,"SELECT m.id,m.flight_id,f.title,f.nickname FROM journal_mail m JOIN journal_flights f ON f.id=m.flight_id WHERE m.state IN('pending','failed') AND m.attempts<3 AND COALESCE(m.error_code,'')!='SEND_UNCONFIRMED' AND (m.last_attempt IS NULL OR m.last_attempt<?) AND f.status='pending' LIMIT 3",new Date(Date.now()-3600000).toISOString()).all()).results||[];
+ for(const item of rows){const claim=await query(env,"UPDATE journal_mail SET state='sending',attempts=attempts+1,last_attempt=? WHERE id=? AND state IN('pending','failed')",now(),item.id).run();if(!claim.meta.changes)continue;
+  const text='Un racconto richiede approvazione.\nTitolo: '+item.title+'\nAutore: '+item.nickname+'\nApri il pannello: '+ORIGIN+'/diario-admin.html#'+item.flight_id+'\nAccedi con la tua chiave amministrativa. Nessuna approvazione avviene tramite il link.';
+  try{let r;if(env.MAIL_PROVIDER==='resend')r=await remote('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+env.RESEND_API_KEY,'Content-Type':'application/json','Idempotency-Key':'journal-review-'+item.id},body:JSON.stringify({from:env.EMAIL_FROM,to:[env.ADMIN_EMAIL],subject:'Drone Italia · Racconto da approvare',text})});else r=await remote('https://api.brevo.com/v3/smtp/email',{method:'POST',headers:{'api-key':env.BREVO_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({sender:{email:env.EMAIL_FROM,name:'Drone Italia'},to:[{email:env.ADMIN_EMAIL}],subject:'Drone Italia · Racconto da approvare',textContent:text,headers:{'idempotencyKey':item.id}})});
+   if(!r.ok)throw Error('PROVIDER_'+r.status);await query(env,"UPDATE journal_mail SET state='sent',sent_at=?,error_code=NULL WHERE id=?",now(),item.id).run();
+  }catch(e){await query(env,"UPDATE journal_mail SET state='failed',error_code=? WHERE id=?",/^PROVIDER_\d+$/.test(e.message)?e.message:'SEND_UNCONFIRMED',item.id).run()}
+ }
+}
+async function route(request,env,ctx){
+ const u=new URL(request.url),path=u.pathname;if(request.method==='OPTIONS')return new Response(null,{status:204,headers:{'Access-Control-Allow-Origin':ORIGIN,'Access-Control-Allow-Methods':'GET,POST,PUT,OPTIONS','Access-Control-Allow-Headers':'Authorization,Content-Type,X-Journal-Admin,X-Rights-Consent,X-Privacy-Consent','Access-Control-Max-Age':'600','Vary':'Origin'}});
+ if(!['GET','POST','PUT'].includes(request.method))fail(405,'Metodo non consentito.');if(request.method!=='GET'&&request.headers.get('Origin')!==ORIGIN)fail(403,'Richiesta non consentita.');
+ if(path==='/health')return json({ok:true,service:'Drone Italia flight journal',version:1,storage:'D1 bounded 100MiB',automaticModeration:!!env.OPENAI_API_KEY,notificationsConfigured:!!(env.ADMIN_EMAIL&&env.EMAIL_FROM&&((env.MAIL_PROVIDER==='resend'&&env.RESEND_API_KEY)||(env.MAIL_PROVIDER==='brevo'&&env.BREVO_API_KEY)))});
+ if(!env.DB)fail(503,'Diario non ancora attivato.');
+ if(path==='/flights'&&request.method==='GET'){const cursor=u.searchParams.get('before'),values=[];let condition="status='published'";if(cursor){if(!ID.test(cursor))fail(400,'Pagina non valida.');const f=await query(env,"SELECT published_at,id FROM journal_flights WHERE id=? AND status='published'",cursor).first();if(!f)fail(400,'Pagina non valida.');condition+=' AND (published_at<? OR (published_at=? AND id<?))';values.push(f.published_at,f.published_at,f.id)}const rows=(await query(env,'SELECT * FROM journal_flights WHERE '+condition+' ORDER BY published_at DESC,id DESC LIMIT 21',...values).all()).results||[];return json({flights:await Promise.all(rows.slice(0,20).map(f=>materialize(env,f))),nextCursor:rows.length>20?rows[19].id:null})}
+ if(path.startsWith('/media/')&&request.method==='GET'){const id=path.slice(7);if(!ID.test(id))fail(404,'Foto non trovata.');const m=await query(env,'SELECT m.*,f.status FROM journal_media m LEFT JOIN journal_flights f ON f.id=m.flight_id WHERE m.id=?',id).first();if(!m)fail(404,'Foto non trovata.');if(m.status!=='published'){const isAdmin=request.headers.get('X-Journal-Admin')==='true';if(isAdmin)await admin(request,env);else{const who=await identity(request,env);if(who.owner!==m.owner)fail(404,'Foto non trovata.')}}return new Response(m.bytes,{headers:{'Content-Type':m.mime,'X-Content-Type-Options':'nosniff','Cache-Control':'no-store','Access-Control-Allow-Origin':ORIGIN,'Vary':'Origin'}})}
+ if(path.startsWith('/admin/')){
+  await admin(request,env);
+  if(path==='/admin/flights'&&request.method==='GET'){const rows=(await query(env,'SELECT * FROM journal_flights ORDER BY created_at DESC LIMIT 100').all()).results||[];return json({flights:await Promise.all(rows.map(f=>materialize(env,f,true)))})}
+  if(path==='/admin/notifications'&&request.method==='GET')return json({notifications:(await query(env,'SELECT id,flight_id,state,attempts,last_attempt,sent_at,error_code FROM journal_mail ORDER BY rowid DESC LIMIT 100').all()).results||[]});
+  if(path==='/admin/notifications/retry'&&request.method==='POST'){ctx.waitUntil(notify(env));return json({ok:true})}
+  const match=path.match(/^\/admin\/flights\/([a-f0-9-]{36})\/(approve|reject|hide)$/i);if(match&&request.method==='POST'){const d=await body(request,2000),f=await query(env,'SELECT * FROM journal_flights WHERE id=?',match[1]).first();if(!f)fail(404,'Racconto non trovato.');if(!Number.isInteger(d.revision)||d.revision!==f.revision)fail(409,'Il racconto è cambiato. Ricarica e controlla la nuova versione.');const reason=match[2]==='approve'?'':clean(d.reason,3,300,'Motivazione'),status={approve:'published',reject:'rejected',hide:'hidden'}[match[2]],stamp=now();const r=await env.DB.batch([query(env,'UPDATE journal_flights SET status=?,review_reason=?,published_at=?,updated_at=?,revision=revision+1 WHERE id=? AND revision=?',status,reason,status==='published'?stamp:null,stamp,f.id,f.revision),query(env,'INSERT INTO journal_audit(id,flight_id,action,reason,created_at) VALUES(?,?,?,?,?)',crypto.randomUUID(),f.id,match[2],reason,stamp)]);if(!r[0].meta.changes)fail(409,'Racconto modificato: ricarica la pagina.');return json({ok:true})}
+  fail(404,'Funzione non trovata.');
+ }
+ const who=await identity(request,env);
+ if(path==='/me'&&request.method==='GET')return json({authenticated:true,rightsVersion:RIGHTS});
+ if(path==='/mine'&&request.method==='GET'){const rows=(await query(env,'SELECT * FROM journal_flights WHERE owner=? ORDER BY created_at DESC LIMIT 100',who.owner).all()).results||[];return json({flights:await Promise.all(rows.map(f=>materialize(env,f,true)))})}
+ if(path==='/media'&&request.method==='POST')return upload(request,env,who.owner);
+ if(path==='/flights'&&request.method==='POST'){const r=await save(request,env,who.owner);ctx.waitUntil(notify(env));return r}
+ const match=path.match(/^\/flights\/([a-f0-9-]{36})$/i);if(match&&request.method==='PUT'){const r=await save(request,env,who.owner,match[1]);ctx.waitUntil(notify(env));return r}
+ fail(404,'Funzione non trovata.');
+}
+export default {async fetch(request,env,ctx){try{return await route(request,env,ctx)}catch(e){if(!(e instanceof HttpError))console.error('Journal request failed');return json({error:e instanceof HttpError?e.message:'Servizio temporaneamente non disponibile.'},e.status||503)}},async scheduled(_event,env,ctx){ctx.waitUntil((async()=>{await query(env,'DELETE FROM journal_media WHERE flight_id IS NULL AND created_at<?',new Date(Date.now()-86400000).toISOString()).run();await query(env,'DELETE FROM journal_rate WHERE expires_at<?',now()).run();await notify(env)})())}};
