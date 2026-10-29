@@ -71,3 +71,11 @@ Il file fornito dall’utente il 29/10/2026 conferma `GAS_WEB_APP_URL` + `DRONE_
 I test sono ora 20: cinque usano il modulo Commenti aggiornato e verificano identità stabile tra sessioni, sessioni revocate, ban account, origine non consentita e collegamento autentico dei due moduli. Rimangono test locali, senza invii email reali. Eseguire `node --test tests/*.test.mjs`.
 
 Fonte quote Google: https://developers.google.com/apps-script/guides/services/quotas (100 destinatari al giorno per account consumer, 1.500 per Workspace, quote per utente condivise con gli altri invii). Verificare il tipo di account e il codice GAS prima di confermare la capacità effettiva. Nessun valore di GAS_WEB_APP_URL o DRONE_ITALIA_SECRET va copiato in file pubblici.
+
+## Gateway Google Apps Script integrato
+
+Dopo aver letto Code.gs, è pronta `integration/Code-diario.gs`. Il secret è letto dalle proprietà del progetto, senza valori in chiaro nel codice. Il tetto esistente di 30 email giornaliere (accessi e notifiche insieme) rimane invariato. Nessun account Brevo/Resend è necessario. Il nuovo evento `journal_review` usa soltanto la proprietà Apps Script `ADMIN_EMAIL` come destinatario, ignorando eventuali indirizzi nel payload. Occorre aggiungere questa proprietà con la casella amministrativa scelta dall’utente. Non cambiare `DRONE_ITALIA_SECRET` e non creare una nuova distribuzione: aggiornare la distribuzione esistente mantenendo il suo URL.
+
+Il Worker Diario usa `MAIL_PROVIDER=gas`, `GAS_WEB_APP_URL` e `DRONE_ITALIA_SECRET`. Non richiede EMAIL_FROM o ADMIN_EMAIL per questo provider: il destinatario rimane sul gateway. In caso di errore o quota raggiunta, l’invio resta registrato come non completato; un esito incerto non viene ritentato automaticamente. Restano necessari tutti i controlli live prima della promozione su main.
+
+Passano ora 29 test locali, inclusi sette del gateway Apps Script reale aggiornato (test eseguiti in VM con MailApp simulato) e due del trasporto GAS del Worker. Nessuna email reale è stata inviata durante i test.
